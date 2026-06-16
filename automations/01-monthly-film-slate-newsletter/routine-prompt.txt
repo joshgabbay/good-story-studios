@@ -66,7 +66,4 @@ CRITICAL RULES:
 - HTML INTEGRITY & FIDELITY: the final email has no stray/partial tags or visible literal tag text; every tie-in references only the film's own grounded premise and cast; streaming-only titles are never presented as theatrical.
 - Grounding is one lightweight WebSearch per film (Step 4) — keep it brief so you can cover every film and never drop one for lack of budget.
 - Synopsis summarizes the grounded premise ONLY; actor tie-ins use ONLY grounded cast; creator tie-ins use real formats from creator-profiles-summary.md.
-- Preserve template <head>, <style>, inline CSS exactly.
-- to_address = full recipients.json list as a JSON array string.
-- Delivery = raw dollar-quoted chunks (Step 8), never base64.
-- Always create the Gmail draft (Step 9).
+(Mechanical steps — template/CSS preservation, to_address, dollar-quoted delivery, Gmail draft — are specified in Steps 6, 8, and 9; follow them there.)
