@@ -51,6 +51,13 @@ Grounding facts come **only** from that run's web results, never from model memo
   film now released by Ketchup Entertainment).
 - **Role accuracy** — an actor's `(Role)` appears **only when that character is grounded** in the
   search results; otherwise the parenthetical is omitted. No guessed, vague, or impossible roles.
+  Names are spelled exactly as the sources show.
+- **Tie-in fidelity** — creator/actor tie-ins reference only the film's own grounded premise and
+  cast; no invented characters/professions or details imported from another film.
+- **Streaming attribution** — titles from a parent's streamer (Peacock, Max, Disney+, Paramount+,
+  Hulu) are filed under that parent but the synopsis names the platform; a streaming-only release
+  is never presented as theatrical.
+- **HTML integrity** — the assembled email is scanned for stray/partial tags before sending.
 
 ## Editing the routine
 
