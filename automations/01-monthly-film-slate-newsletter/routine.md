@@ -24,7 +24,9 @@ when the two disagree, **this file and the live routine win.**
    `creator-profiles-summary.md`, `email-template.html`).
 3. **Discovery** — for all 24 studios, lists every film with an in-window release date
    (Wikipedia tables for traditional studios; search + platform lists for the streamers).
-   The studio at this stage is *provisional*.
+   The studio at this stage is *provisional*. If a studio's Wikipedia URL 404s or has no
+   upcoming table, discovery falls back to a WebSearch rather than silently skipping the
+   studio, and the streamers are never left empty without confirming zero in-window releases.
 4. **Grounding** — one lightweight `WebSearch` per film verifies, from that run's results only:
    release **date**, **distributor**, **premise**, and **cast** (with characters only as
    explicitly stated). Films that can't be verified, that left the window, or whose distributor

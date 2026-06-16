@@ -14,8 +14,8 @@ STEP 2 — Read config files:
 - automations/01-monthly-film-slate-newsletter/email-template.html
 
 STEP 3 — DISCOVERY (do this for ALL 24 studios BEFORE any grounding; finish the whole list first).
-3A. Traditional studios (all except the 3 streamers): WebFetch the studio's wikipedia_url once; from its upcoming/forthcoming-films table, list every film with a release date in the window.
-3B. Streamers (Netflix Studios, Apple TV+, Amazon MGM Studios): WebSearch the search_hint (e.g. '<platform> original films 2026 release dates') and skim the platform's 'List of <platform> original films (2026)' page; list notable films with an in-window release.
+3A. Traditional studios (all except the 3 streamers): WebFetch the studio's wikipedia_url once; from its upcoming/forthcoming-films table, list every film with a release date in the window. If that fetch fails (404/empty) or has no upcoming-films table, DO NOT skip the studio — fall back to a WebSearch ('<studio name> upcoming films 2026 release dates') and list its in-window films from there before moving on.
+3B. Streamers (Netflix Studios, Apple TV+, Amazon MGM Studios): WebSearch the search_hint (e.g. '<platform> original films 2026 release dates') and skim the platform's 'List of <platform> original films (2026)' page; list notable films with an in-window release. NEVER return an empty list for Apple TV+, Amazon MGM, or Netflix without explicitly confirming zero in-window releases — list every notable in-window title (including major star-driven originals) before moving on.
 Write the COMPLETE candidate list to /tmp/candidates.txt, one line per film: 'Studio | Title | rough date'. The Studio here is PROVISIONAL — it is just where you found the film and may be wrong; Step 4 verifies it. Do NOT skip any studio. Do NOT write synopses yet. Confirm every one of the 24 studios was checked (note which have zero in-window films).
 
 STEP 4 — GROUND every candidate (LIGHTWEIGHT — one search per film, facts from results only, never memory).
