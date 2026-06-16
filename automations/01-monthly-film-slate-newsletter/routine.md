@@ -28,9 +28,11 @@ when the two disagree, **this file and the live routine win.**
    upcoming table, discovery falls back to a WebSearch rather than silently skipping the
    studio, and the streamers are never left empty without confirming zero in-window releases.
 4. **Grounding** — one lightweight `WebSearch` per film verifies, from that run's results only:
-   release **date**, **distributor**, **premise**, and **cast** (with characters only as
-   explicitly stated). Films that can't be verified, that left the window, or whose distributor
-   is unclear are dropped.
+   release **date** (with date_status confirmed/anticipated), **distributor**, **premise**, and
+   **cast** (with characters only as explicitly stated). Films that can't be verified, that left
+   the window, or whose distributor is unclear are dropped; anticipated month-only in-window
+   films are kept and tagged "(anticipated)". The same film is never listed under two studios —
+   it is filed once under its verified distributor (deduped across sub-labels/co-productions).
 5. Per surviving film: a 2-sentence synopsis, one best-fit **creator** sponsorship tie-in, and
    **actor tie-ins** (a short per-actor idea; a role label only when grounded).
 6. Assembles HTML from `email-template.html`, replacing `{{MONTH_YEAR}}`, `{{GENERATED_DATE}}`,
