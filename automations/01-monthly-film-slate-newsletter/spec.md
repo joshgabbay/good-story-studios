@@ -52,3 +52,21 @@
 *   
 * Grant Rudow   
         - After the two sentence synopsis of the film, write two more sentences, about how the film could connect to one or two of the YouTubers and come up with a creative way that the film could be integrated into a YouTube video for that specific YouTuber as a sponsored segment, but also in a way that fits well with the YouTuber’s brand and the type of content they make. Refer to the md file for the complete profile on each YouTuber to create as specific a video content creation connecter as possible. This is the key and valuable part of this process.   
+
+---
+
+## As-built (production routine)
+
+The original ask above is implemented and extended by the live cloud routine. See
+`routine.md` (deployment + behavior) and `routine-prompt.txt` (verbatim prompt) for the
+source of truth. Differences from the original ask:
+
+- **Window is 3 months**, not 6 (the original first line said 6; the body and the build use 3).
+- **24 studios** (see `studios.json`) — low-yield studios were trimmed from the original list.
+- **Actor Tie-Ins** were added on top of the per-film creator tie-in: 2–4 grounded actors,
+  each with a short idea for appearing in that creator's video.
+- **Accuracy/verification layer**: every date, distributor, premise, character, and actor is
+  grounded in that-run web results only. Films are dropped if unverifiable or out of window;
+  a film is filed under its **verified distributor** (not the page it was found on); an actor's
+  role label appears **only when grounded**.
+- **Delivery**: emails the full `recipients.json` list (via Supabase) and creates a Gmail draft.

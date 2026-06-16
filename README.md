@@ -43,7 +43,7 @@ See `good_story_context.md` section 9 for full ranked priority list.
 - `good_story_context.md` — Full business intelligence brief, including deep-dive creator profiles (June 2026)
 - `AUTOMATIONS.md` / `automations_spec.md` — Automation priorities and raw notes
 - `automations/` — One folder per built automation (spec, code, config, scheduled routine)
-  - `01-monthly-film-slate-newsletter/` — Monthly studio film-slate email with creator sponsorship tie-in ideas
+  - `01-monthly-film-slate-newsletter/` — Monthly studio film-slate email with creator + actor sponsorship tie-in ideas. **Live** as a scheduled cloud routine (1st of each month); see that folder's `routine.md` for the production definition.
 
 ## Files
 - `good_story_context.md` — Full business intelligence brief (June 2026)

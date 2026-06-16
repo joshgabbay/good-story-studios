@@ -1,0 +1,66 @@
+You are executing the monthly film slate newsletter for Good Story Studios.
+
+=== TWO NON-NEGOTIABLE GOALS: COMPLETENESS *and* ACCURACY ===
+COMPLETENESS: find EVERY in-window film for ALL 24 studios — never skip a studio, especially the streamers (Apple TV+, Amazon MGM, Netflix) and smaller labels (Focus Features, etc.).
+ACCURACY: every release date, plot point, setting, character, actor, AND distributing studio MUST come from a web result you pulled THIS run — NEVER from memory or assumption. If a fact isn't in your search results, omit it.
+These coexist because grounding is done with LIGHTWEIGHT searches (below), not heavy full-page reads, so you have budget to cover every film.
+
+STEP 1 — Date & window: run date "+%Y-%m-%d"; window_end = exactly 3 months later; record today, window_end, month_year label, display date ("Generated <Month D, YYYY>").
+
+STEP 2 — Read config files:
+- automations/01-monthly-film-slate-newsletter/studios.json
+- automations/01-monthly-film-slate-newsletter/recipients.json
+- automations/01-monthly-film-slate-newsletter/creator-profiles-summary.md
+- automations/01-monthly-film-slate-newsletter/email-template.html
+
+STEP 3 — DISCOVERY (do this for ALL 24 studios BEFORE any grounding; finish the whole list first).
+3A. Traditional studios (all except the 3 streamers): WebFetch the studio's wikipedia_url once; from its upcoming/forthcoming-films table, list every film with a release date in the window.
+3B. Streamers (Netflix Studios, Apple TV+, Amazon MGM Studios): WebSearch the search_hint (e.g. '<platform> original films 2026 release dates') and skim the platform's 'List of <platform> original films (2026)' page; list notable films with an in-window release.
+Write the COMPLETE candidate list to /tmp/candidates.txt, one line per film: 'Studio | Title | rough date'. The Studio here is PROVISIONAL — it is just where you found the film and may be wrong; Step 4 verifies it. Do NOT skip any studio. Do NOT write synopses yet. Confirm every one of the 24 studios was checked (note which have zero in-window films).
+
+STEP 4 — GROUND every candidate (LIGHTWEIGHT — one search per film, facts from results only, never memory).
+For EACH film in /tmp/candidates.txt, run ONE WebSearch: '<title> 2026 film release date cast plot'. From the returned snippets/summary (which draw on Wikipedia, Deadline, Variety, etc.), record four things:
+- DATE: the current US theatrical/streaming date. If results show it was removed from the schedule, delayed past the window, or is TBA/undated → DROP the film. Otherwise confirm it's within today → window_end.
+- DISTRIBUTOR: the studio/distributor named in the results for THIS release. If it differs from the provisional studio you filed the film under in Step 3 (common when one studio shelved a film and another now distributes it — e.g. a former Warner Bros. title released by Ketchup Entertainment), FILE THE FILM UNDER THE VERIFIED DISTRIBUTOR'S BLOCK, not the page it was found on. If the distributor is unclear or sources contradict each other, DROP the film.
+- PREMISE: 1–2 lines of the actual plot/premise as stated in the results (this is the ONLY basis for the synopsis).
+- CAST: the 2–4 top-billed actors and, for each, their character name ONLY AS EXPLICITLY STATED in the results. Do NOT infer or guess a role — if the results do not clearly give a given actor's character, record that actor with NO role.
+Keep these notes brief and move on — this step is deliberately light so you can ground EVERY film without running low on budget. If a film's results are thin, run at most one more targeted search; if still unverifiable, drop it. HARD RULE: if a date, distributor, plot point, setting, character, or actor is not in your search results, it does not go in the email.
+
+STEP 5 — For each SURVIVING film, produce its content:
+a) SYNOPSIS: exactly 2 plain sentences summarizing ONLY the grounded premise from Step 4 — no added characters/settings/plot.
+b) CREATOR TIE-IN: from creator-profiles-summary.md pick the ONE best-fit creator; 2 sentences (name + angle; then the specific sponsored segment referencing their real format/series).
+c) ACTOR TIE-INS: using ONLY the grounded cast, list those 2–4 actors; each gets a ~5–8 word idea for appearing in that creator's video, tied to the creator's format. Attach a (Role) to an actor ONLY IF you grounded that actor's specific character in Step 4 — otherwise list the actor with NO parenthetical. NEVER write a role you did not read in the results, and NEVER a vague placeholder ('New character', 'Supporting role') or a logically impossible one (e.g. a male actor given a female role, or 'Husband's wife'). When unsure, omit the role.
+
+STEP 6 — Assemble the HTML. Use email-template.html as the base; preserve its <head>, <style>, and all inline CSS EXACTLY; replace only {{MONTH_YEAR}}, {{GENERATED_DATE}}, {{STUDIO_BLOCKS}}.
+Studio block:
+<table class="studio-block" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:36px;"><tbody><tr><td><h2 style="margin:0 0 20px 0;font-family:'Nunito',Arial,sans-serif;font-size:20px;font-weight:900;color:#6B90D9;letter-spacing:-0.2px;border-left:5px solid #F2C53D;padding-left:14px;line-height:1.2;">STUDIO NAME</h2>FILM_ENTRIES</td></tr></tbody></table>
+Film entry (three inner blocks: synopsis, blue Creator Opportunity, pink Actor Tie-Ins):
+<table class="film-entry" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:20px;"><tbody><tr><td style="background-color:#FAFBFF;border-radius:16px;padding:20px 24px;border:1.5px solid #EDF2FB;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:10px;"><tbody><tr><td style="vertical-align:middle;"><span style="font-family:'Nunito',Arial,sans-serif;font-size:16px;font-weight:800;color:#2D2D2D;line-height:1.3;">FILM TITLE</span></td><td style="text-align:right;vertical-align:middle;white-space:nowrap;padding-left:12px;"><span style="font-family:'Nunito',Arial,sans-serif;font-size:12px;font-weight:700;color:#6B90D9;background-color:#EDF2FB;border-radius:20px;padding:3px 10px;display:inline-block;">RELEASE DATE</span></td></tr></tbody></table><p style="margin:0 0 14px 0;font-family:'Nunito',Arial,sans-serif;font-size:14px;font-weight:400;color:#7A7E8B;line-height:1.65;">2-SENTENCE SYNOPSIS</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tbody><tr><td style="background-color:#EDF2FB;border-radius:12px;padding:14px 18px;"><p style="margin:0 0 5px 0;font-family:'Nunito',Arial,sans-serif;font-size:12px;font-weight:900;color:#6B90D9;text-transform:uppercase;letter-spacing:0.8px;">Creator Opportunity ✦</p><p style="margin:0;font-family:'Nunito',Arial,sans-serif;font-size:13px;font-weight:600;color:#5A78BB;line-height:1.6;"><strong>CREATOR NAME:</strong> 2-SENTENCE TIE-IN</p></td></tr></tbody></table><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:10px;"><tbody><tr><td style="background-color:#FDEFF4;border-radius:12px;padding:14px 18px;"><p style="margin:0 0 6px 0;font-family:'Nunito',Arial,sans-serif;font-size:12px;font-weight:900;color:#D96D92;text-transform:uppercase;letter-spacing:0.8px;">Actor Tie-Ins ✦</p><p style="margin:0;font-family:'Nunito',Arial,sans-serif;font-size:13px;font-weight:600;color:#A85478;line-height:1.75;">ACTOR_LINES</p></td></tr></tbody></table></td></tr></tbody></table>
+ACTOR_LINES = one line per actor joined by <br>: <strong>Actor Name</strong> (Role) — short idea  (no trailing <br>). The (Role) is OPTIONAL: include it only when grounded per Step 5c; otherwise write just <strong>Actor Name</strong> — short idea.
+
+STEP 7 — Write the full HTML to /tmp/email_body.html
+
+STEP 8 — Send via Supabase (CCR blocks direct HTTP; load HTML in a FEW raw dollar-quoted chunks, NOT base64).
+a) From recipients.json build a JSON array string of ALL addresses; use as to_address:
+mcp__claude_ai_Supabase__execute_sql (project_id 'qahbmrequuwfklqsfaex'):
+INSERT INTO email_queue (to_address, subject, html_body) VALUES ('<RECIPIENTS_JSON_ARRAY>', 'Good Story Studios — <MONTH_YEAR> Film Slate ✦', '') RETURNING id;
+b) python3 -c "h=open('/tmp/email_body.html',encoding='utf-8').read(); n=12000; c=[h[i:i+n] for i in range(0,len(h),n)]; [open(f'/tmp/part_{i}.txt','w',encoding='utf-8').write(x) for i,x in enumerate(c)]; print('chunks:',len(c))"
+c) For each part in order, ONE execute_sql: UPDATE email_queue SET html_body = html_body || $GSS$<exact contents of /tmp/part_i.txt>$GSS$ WHERE id = QUEUE_ID;
+d) Verify: SELECT length(html_body) AS len, right(html_body,15) AS tail FROM email_queue WHERE id = QUEUE_ID;  expect 30000+, tail </html>.
+e) SELECT net.http_post(url := 'https://qahbmrequuwfklqsfaex.supabase.co/functions/v1/send-film-slate-email', body := jsonb_build_object('queue_id', QUEUE_ID), headers := '{"Content-Type": "application/json"}'::jsonb) AS request_id;
+f) bash: sleep 15
+g) SELECT id, sent_at, error FROM email_queue WHERE id = QUEUE_ID;  sent_at set = success.
+
+STEP 9 — Gmail draft: read /tmp/email_body.html, call mcp__claude_ai_Gmail__create_draft with to ['joshuagabbay1@gmail.com'], subject 'Good Story Studios — <MONTH_YEAR> Film Slate ✦', htmlBody = the ENTIRE HTML. If Gmail is unavailable, note it and continue.
+
+CRITICAL RULES:
+- COMPLETENESS: finish discovery for ALL 24 studios (Step 3) and write /tmp/candidates.txt BEFORE grounding; never skip a studio. Apple TV+, Amazon MGM, and Focus Features must be checked every run.
+- ACCURACY: grounding facts come ONLY from this-run search results, never memory; drop films you can't verify or that left the window.
+- STUDIO ACCURACY: a film goes under its VERIFIED current distributor (Step 4 DISTRIBUTOR), NOT merely the studio whose Wikipedia page first listed it; reassign or drop on mismatch.
+- ROLE ACCURACY: show an actor's (Role) ONLY when that character was grounded in Step 4; otherwise omit the parenthetical. Never guess, never use vague placeholders, never a logically impossible role.
+- Grounding is one lightweight WebSearch per film (Step 4) — keep it brief so you can cover every film and never drop one for lack of budget.
+- Synopsis summarizes the grounded premise ONLY; actor tie-ins use ONLY grounded cast; creator tie-ins use real formats from creator-profiles-summary.md.
+- Preserve template <head>, <style>, inline CSS exactly.
+- to_address = full recipients.json list as a JSON array string.
+- Delivery = raw dollar-quoted chunks (Step 8), never base64.
+- Always create the Gmail draft (Step 9).

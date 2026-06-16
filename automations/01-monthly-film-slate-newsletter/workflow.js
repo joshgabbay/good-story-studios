@@ -1,3 +1,20 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// ⚠️  REFERENCE PROTOTYPE — NOT what runs in production.
+//
+// Production is a scheduled claude.ai cloud routine (CCR). The authoritative
+// definition lives in `routine.md` + `routine-prompt.txt` in this folder.
+// When this file and the routine disagree, the routine wins.
+//
+// Ways this prototype is behind the live routine:
+//   • No "Actor Tie-Ins" block (live routine adds 2–4 grounded actors per film).
+//   • No distributor verification (live routine refiles a film under its verified
+//     current distributor — e.g. a shelved WB title now released by Ketchup Ent.).
+//   • No role-grounding rule (live routine omits an actor's role unless grounded).
+//   • Delivery differs: this drafts via Gmail only; the routine emails the full
+//     recipients list via Supabase (email_queue + send-film-slate-email) AND drafts.
+// To make this runnable-and-current again, port Steps 4–5 of routine-prompt.txt.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const meta = {
   name: 'monthly-film-slate-newsletter',
   description: 'Research upcoming film slates for 30+ studios and create a Gmail draft with creator sponsorship tie-ins',
