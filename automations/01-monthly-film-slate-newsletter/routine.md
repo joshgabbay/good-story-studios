@@ -58,6 +58,11 @@ Grounding facts come **only** from that run's web results, never from model memo
   Hulu) are filed under that parent but the synopsis names the platform; a streaming-only release
   is never presented as theatrical.
 - **HTML integrity** — the assembled email is scanned for stray/partial tags before sending.
+- **Currency** — each film uses its latest title/date/distributor; anything already released
+  before today or retitled/moved out of the window is dropped (catches stale data like a film
+  renamed and shipped early on another platform).
+- **Brevity** — synopsis 2 sentences, creator opp 2 sentences, ≤3 actor tie-ins, so the email
+  stays under Gmail's ~102KB clipping limit.
 
 ## Editing the routine
 
