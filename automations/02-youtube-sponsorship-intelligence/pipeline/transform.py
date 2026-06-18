@@ -42,7 +42,7 @@ def _to_int(value):
 
 def load_csv(path, column_map):
     rows = []
-    with open(path, newline="", encoding="utf-8") as fh:
+    with open(path, newline="", encoding="utf-8-sig") as fh:
         reader = csv.DictReader(fh)
         for raw in reader:
             row = {}
@@ -67,6 +67,7 @@ def resolve_brand(raw_sponsor, aliases):
 def normalize_rows(raw_rows, month, config, aliases):
     delimiter = config["multi_sponsor"]["delimiter"]
     long_form_cfg = config["long_form"]
+    alias_canonicals = {v["canonical"] for v in aliases.values()}
     out = []
     seen = set()
     for r in raw_rows:
@@ -89,17 +90,24 @@ def normalize_rows(raw_rows, month, config, aliases):
                 "publish_date": r.get("publish_date"),
                 "length_seconds": r.get("length_seconds"),
                 "is_long_form": long_form,
-                "is_aliased": normalize_key(sponsor) in aliases,
+                "is_aliased": (normalize_key(sponsor) in aliases) or (canonical in alias_canonicals),
             })
     return out
 
 
-def top_unmatched_brands(rows, limit=10):
-    """Top long-form brands resolved by fallback (not in the alias map) — alias candidates."""
+def top_unmatched_brands(rows, limit=10, exclude=None):
+    """Top long-form brands resolved by fallback (not in the alias map) — alias candidates.
+
+    ``exclude`` is an optional set of canonical brand keys to suppress (e.g. brands
+    that already have a known relationship and should not be flagged for review).
+    """
+    exclude = exclude or set()
     counts, displays = {}, {}
     for r in rows:
         if r["is_long_form"] and not r.get("is_aliased", True):
             canon = r["brand_canonical"]
+            if canon in exclude:
+                continue
             counts[canon] = counts.get(canon, 0) + 1
             displays.setdefault(canon, r["brand_display"])
     ordered = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[:limit]

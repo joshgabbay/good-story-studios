@@ -41,6 +41,10 @@ def test_end_to_end_two_months(tmp_path):
     assert any(b["brand_display"] == "Squarespace" for b in report["dropped_brands"])
     # HelloFresh has no alias entry → resolved by fallback → surfaced as an alias candidate.
     assert any(b["brand_display"] == "HelloFresh" for b in report["unmatched"])
+    # Already-established brands (known_brands.json keys) must NOT appear in unmatched.
+    unmatched_displays = [b["brand_display"] for b in report["unmatched"]]
+    assert "BetterHelp" not in unmatched_displays, "BetterHelp is established — must not be unmatched"
+    assert "NordVPN" not in unmatched_displays, "NordVPN is established — must not be unmatched"
 
     html = open(out_jun, encoding="utf-8").read()
     assert "BetterHelp" in html and "{{ROWS}}" not in html

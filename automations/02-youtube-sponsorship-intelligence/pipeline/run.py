@@ -37,7 +37,7 @@ def run_month(csv_path, month, config_path, aliases_path, known_brands_path,
     engine.init_schema(conn)
     engine.load_month(conn, month, rows)
     report_data = engine.rank_and_diff(conn, month, config["top_n"])
-    report_data["unmatched"] = transform.top_unmatched_brands(rows)
+    report_data["unmatched"] = transform.top_unmatched_brands(rows, exclude=set(known))
 
     rels = relationships.lookup_relationships(
         [r["brand_canonical"] for r in report_data["ranked"]], known)

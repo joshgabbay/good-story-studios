@@ -152,3 +152,67 @@ def test_top_unmatched_brands_ranks_fallback_only():
     ]
     out = transform.top_unmatched_brands(rows, limit=10)
     assert out == [{"brand_display": "HelloFresh", "count": 2}]  # aliased + short-form excluded
+
+
+# ---------------------------------------------------------------------------
+# Fix 1: UTF-8 BOM test
+# ---------------------------------------------------------------------------
+
+def test_load_csv_with_bom_parses_first_column(tmp_path):
+    """CSV written with a UTF-8 BOM must not corrupt the first header."""
+    csv_path = tmp_path / "bom.csv"
+    # Write with utf-8-sig so the file starts with the BOM byte sequence.
+    with open(csv_path, "w", encoding="utf-8-sig", newline="") as fh:
+        fh.write("Video Title,Video URL,Channel,Sponsor,Publish Date,Length (s)\n")
+        fh.write("My Title,https://yt/z,ChanZ,Acme,2026-06-01,700\n")
+    rows = transform.load_csv(str(csv_path), COLUMN_MAP)
+    assert len(rows) == 1
+    assert rows[0]["video_title"] == "My Title", (
+        "video_title was None — BOM corrupted the first header column"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Fix 2a: is_aliased for canonical-spelled sponsors
+# ---------------------------------------------------------------------------
+
+def test_normalize_rows_canonical_sponsor_is_aliased_true():
+    """Raw 'BetterHelp' resolves to canonical 'betterhelp', which is an alias
+    *target* — it should be marked is_aliased=True so it won't surface as a
+    review candidate.  'HelloFresh' has no alias entry at all → is_aliased=False."""
+    config = _load_json(CONFIG_PATH)
+    aliases = _load_json(ALIASES_PATH)
+    rows = [
+        {"video_title": "G", "video_url": "https://yt/g", "channel": "C",
+         "sponsor": "BetterHelp",   # canonical spelling — not an alias *key*
+         "publish_date": "2026-06-02", "length_seconds": 700, "long_form_flag": None},
+        {"video_title": "K", "video_url": "https://yt/k", "channel": "C",
+         "sponsor": "HelloFresh",   # genuinely unknown brand
+         "publish_date": "2026-06-18", "length_seconds": 800, "long_form_flag": None},
+    ]
+    out = transform.normalize_rows(rows, "2026-06", config, aliases)
+    by_canon = {r["brand_canonical"]: r for r in out}
+    assert by_canon["betterhelp"]["is_aliased"] is True, (
+        "BetterHelp (canonical spelling) should be is_aliased=True"
+    )
+    assert by_canon["hellofresh"]["is_aliased"] is False, (
+        "HelloFresh (unknown brand) should be is_aliased=False"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Fix 2b: top_unmatched_brands exclude parameter
+# ---------------------------------------------------------------------------
+
+def test_top_unmatched_brands_exclude_removes_known():
+    """Brands in the exclude set should never appear in the unmatched list."""
+    rows = [
+        {"brand_canonical": "hellofresh", "brand_display": "HelloFresh",
+         "is_long_form": True, "is_aliased": False},
+        {"brand_canonical": "nordvpn", "brand_display": "NordVPN",
+         "is_long_form": True, "is_aliased": False},
+    ]
+    out = transform.top_unmatched_brands(rows, limit=10, exclude={"nordvpn"})
+    canonicals = [item["brand_display"] for item in out]
+    assert "HelloFresh" in canonicals, "HelloFresh should still appear"
+    assert "NordVPN" not in canonicals, "NordVPN should be excluded"
