@@ -1,0 +1,16 @@
+{
+  "column_map": {
+    "video_title": "Video Title",
+    "video_url": "Video URL",
+    "channel": "Channel",
+    "sponsor": "Sponsor",
+    "publish_date": "Publish Date",
+    "length_seconds": "Length (s)",
+    "long_form_flag": null
+  },
+  "long_form": { "mode": "threshold", "length_threshold_seconds": 600 },
+  "multi_sponsor": { "delimiter": ";" },
+  "top_n": 25,
+  "final_recipient": null,
+  "slack_channel": null
+}
