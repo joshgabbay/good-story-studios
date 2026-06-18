@@ -62,3 +62,45 @@ def resolve_brand(raw_sponsor, aliases):
         a = aliases[key]
         return a["canonical"], a["display"]
     return key, str(raw_sponsor).strip()
+
+
+def normalize_rows(raw_rows, month, config, aliases):
+    delimiter = config["multi_sponsor"]["delimiter"]
+    long_form_cfg = config["long_form"]
+    out = []
+    seen = set()
+    for r in raw_rows:
+        long_form = is_long_form(r.get("length_seconds"), r.get("long_form_flag"), long_form_cfg)
+        for sponsor in split_sponsors(r.get("sponsor"), delimiter):
+            canonical, display = resolve_brand(sponsor, aliases)
+            if not canonical:
+                continue
+            dedupe = (r.get("video_url"), canonical)
+            if dedupe in seen:
+                continue
+            seen.add(dedupe)
+            out.append({
+                "month": month,
+                "video_title": r.get("video_title"),
+                "video_url": r.get("video_url"),
+                "channel": r.get("channel"),
+                "brand_canonical": canonical,
+                "brand_display": display,
+                "publish_date": r.get("publish_date"),
+                "length_seconds": r.get("length_seconds"),
+                "is_long_form": long_form,
+                "is_aliased": normalize_key(sponsor) in aliases,
+            })
+    return out
+
+
+def top_unmatched_brands(rows, limit=10):
+    """Top long-form brands resolved by fallback (not in the alias map) — alias candidates."""
+    counts, displays = {}, {}
+    for r in rows:
+        if r["is_long_form"] and not r.get("is_aliased", True):
+            canon = r["brand_canonical"]
+            counts[canon] = counts.get(canon, 0) + 1
+            displays.setdefault(canon, r["brand_display"])
+    ordered = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[:limit]
+    return [{"brand_display": displays[c], "count": n} for c, n in ordered]

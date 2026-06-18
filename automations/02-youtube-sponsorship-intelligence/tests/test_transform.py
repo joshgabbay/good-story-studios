@@ -83,3 +83,72 @@ def test_resolve_brand_uses_alias():
 
 def test_resolve_brand_without_alias_uses_normalized_key_and_raw_display():
     assert transform.resolve_brand("HelloFresh", {}) == ("hellofresh", "HelloFresh")
+
+
+import json
+
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "config.json")
+ALIASES_PATH = os.path.join(os.path.dirname(__file__), "..", "brand_aliases.seed.json")
+
+
+def _load_json(path):
+    with open(path, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def test_normalize_rows_splits_filters_and_resolves():
+    config = _load_json(CONFIG_PATH)
+    aliases = _load_json(ALIASES_PATH)
+    raw = transform.load_csv(os.path.join(SAMPLE_DIR, "2026-05_sample.csv"), config["column_map"])
+    out = transform.normalize_rows(raw, "2026-05", config, aliases)
+
+    # Multi-sponsor Vid B becomes two rows; short-form Vid D (120s) is kept but flagged short.
+    canon_counts = {}
+    for r in out:
+        if r["is_long_form"]:
+            canon_counts[r["brand_canonical"]] = canon_counts.get(r["brand_canonical"], 0) + 1
+    assert canon_counts.get("betterhelp") == 2   # Vid A + Vid C (alias)
+    assert canon_counts.get("squarespace") == 2  # Vid B + Vid F
+    assert canon_counts.get("nordvpn") == 2      # Vid B + Vid E
+    assert "shortbrand" not in canon_counts      # Vid D is short-form
+
+    # Every output row carries the month and a display name.
+    assert all(r["month"] == "2026-05" for r in out)
+    assert all(r["brand_display"] for r in out)
+
+
+def test_normalize_rows_dedupes_same_video_same_brand():
+    config = _load_json(CONFIG_PATH)
+    rows = [
+        {"video_title": "X", "video_url": "https://yt/x", "channel": "C",
+         "sponsor": "BetterHelp; BetterHelp", "publish_date": "2026-05-01",
+         "length_seconds": 700, "long_form_flag": None},
+    ]
+    out = transform.normalize_rows(rows, "2026-05", config, {})
+    assert len(out) == 1
+
+
+def test_normalize_rows_marks_alias_vs_fallback():
+    config = _load_json(CONFIG_PATH)
+    aliases = _load_json(ALIASES_PATH)
+    rows = [
+        {"video_title": "A", "video_url": "https://yt/a", "channel": "C", "sponsor": "Better Help",
+         "publish_date": "2026-05-01", "length_seconds": 700, "long_form_flag": None},
+        {"video_title": "B", "video_url": "https://yt/b", "channel": "C", "sponsor": "HelloFresh",
+         "publish_date": "2026-05-02", "length_seconds": 700, "long_form_flag": None},
+    ]
+    out = transform.normalize_rows(rows, "2026-05", config, aliases)
+    by_canon = {r["brand_canonical"]: r for r in out}
+    assert by_canon["betterhelp"]["is_aliased"] is True       # matched alias
+    assert by_canon["hellofresh"]["is_aliased"] is False      # fallback → alias candidate
+
+
+def test_top_unmatched_brands_ranks_fallback_only():
+    rows = [
+        {"brand_canonical": "hellofresh", "brand_display": "HelloFresh", "is_long_form": True, "is_aliased": False},
+        {"brand_canonical": "hellofresh", "brand_display": "HelloFresh", "is_long_form": True, "is_aliased": False},
+        {"brand_canonical": "betterhelp", "brand_display": "BetterHelp", "is_long_form": True, "is_aliased": True},
+        {"brand_canonical": "shorty", "brand_display": "Shorty", "is_long_form": False, "is_aliased": False},
+    ]
+    out = transform.top_unmatched_brands(rows, limit=10)
+    assert out == [{"brand_display": "HelloFresh", "count": 2}]  # aliased + short-form excluded
