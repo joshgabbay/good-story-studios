@@ -1,17 +1,42 @@
-[DRAFT — finalize when Supabase/HubSpot/Slack connectors and the real recipient/channel exist.]
+[DRAFT — finalize when the Supabase/HubSpot/Slack connectors and the real recipient/channel exist.
+The pipeline, history-sync, delivery, and alias seams are already built and tested (48 tests);
+this prompt is the thin cloud-routine wrapper that injects the connectors.]
 
 You are running the monthly YouTube Sponsorship Intelligence digest for Good Story Studios.
+The repo is cloned; work in automations/02-youtube-sponsorship-intelligence/. Connectors attached:
+Supabase, HubSpot, Slack.
 
-1. Inputs: the month (YYYY-MM), the path/link to this month's sponsored-video CSV, and config.json.
-2. Pull prior months' brand_monthly_counts from Supabase into a local SQLite DB, then run the
-   tested pipeline/ over this month's CSV (SQLite is the compute; Supabase is just durable storage).
-   At the end, upsert this month's brand_monthly_counts back to Supabase.
-3. The pipeline aggregates long-form rows, ranks Top-N, computes month-over-month vs the prior
-   stored month (up/down/same/new, plus new and dropped brands), and surfaces top unmatched brands
-   for alias review. First month = baseline.
-4. For the Top-N brands, query HubSpot (MCP) for an existing relationship + deal stage.
-5. Write a 2-3 sentence narrative of what moved; assemble the HTML report from email-template.html.
-6. Email the report to config.final_recipient (Supabase send pattern) AND post a Slack summary to
-   config.slack_channel. FIRST RUN: owner-only until validated.
+STEP 1 — Inputs: the month (YYYY-MM), the path to this month's sponsored-video CSV, config.json.
 
-Deterministic counting/ranking is done in code (see pipeline/), NOT by you. You write the narrative.
+STEP 2 — Pull history: create a local SQLite DB and load prior months into it from Supabase
+(SELECT month, brand_canonical, brand_display, sponsorship_count FROM brand_monthly_counts) via
+pipeline.history_store.pull_prior_counts(conn, fetch_counts). SQLite is the compute; Supabase is
+durable storage only.
+
+STEP 3 — Run the pipeline over this month's CSV using the tested pipeline.run.run_month (or the
+underlying transform → engine.load_month → engine.rank_and_diff path) against that same SQLite DB.
+It aggregates long-form rows, ranks Top-N, computes month-over-month (up/down/same/new + new and
+dropped brands), and surfaces top unmatched brands for alias review. First month = baseline. All
+counting/ranking is deterministic CODE — never tally yourself.
+
+STEP 4 — Relationships: for the Top-N brands, query HubSpot (MCP) for an existing relationship +
+deal stage; pass the result map into the report (the same shape relationships.lookup_relationships
+returns: {canonical: {has_relationship, stage}}).
+
+STEP 5 — Narrative: write a 2–3 sentence narrative of what actually moved this month (top spender,
+notable risers/new entrants, priority warm relationships). This is the ONLY part you author.
+
+STEP 6 — Render: assemble the HTML from email-template.html via report.render_html (set
+show_unmatched per config.audience: internal keeps the alias-review section, external omits it) and
+the Slack text via report.render_slack.
+
+STEP 7 — Push history: upsert this month's brand_monthly_counts back to Supabase via
+pipeline.history_store.push_month_counts(conn, month, upsert_counts) using the upsert in
+sql/supabase_schema.sql.
+
+STEP 8 — Deliver: email the HTML to config.final_recipient (Supabase email_queue + send edge
+function, same pattern as the film-slate automation) AND post the Slack summary to
+config.slack_channel. FIRST RUN: deliver to the owner only until validated, then flip the config.
+
+STEP 9 — Report which brands were surfaced as unmatched so the operator can fold real ones into
+brand_aliases.seed.json (tools/alias_add.py) before next month.
