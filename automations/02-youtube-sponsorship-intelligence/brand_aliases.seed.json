@@ -1,4 +1,27 @@
 {
   "better help": { "canonical": "betterhelp", "display": "BetterHelp" },
-  "betterhelp com": { "canonical": "betterhelp", "display": "BetterHelp" }
+  "betterhelp com": { "canonical": "betterhelp", "display": "BetterHelp" },
+  "nord vpn": { "canonical": "nordvpn", "display": "NordVPN" },
+  "nordvpn com": { "canonical": "nordvpn", "display": "NordVPN" },
+  "express vpn": { "canonical": "expressvpn", "display": "ExpressVPN" },
+  "expressvpn com": { "canonical": "expressvpn", "display": "ExpressVPN" },
+  "surfshark com": { "canonical": "surfshark", "display": "Surfshark" },
+  "square space": { "canonical": "squarespace", "display": "Squarespace" },
+  "squarespace com": { "canonical": "squarespace", "display": "Squarespace" },
+  "hello fresh": { "canonical": "hellofresh", "display": "HelloFresh" },
+  "hellofresh com": { "canonical": "hellofresh", "display": "HelloFresh" },
+  "manscaped com": { "canonical": "manscaped", "display": "Manscaped" },
+  "skill share": { "canonical": "skillshare", "display": "Skillshare" },
+  "skillshare com": { "canonical": "skillshare", "display": "Skillshare" },
+  "audible com": { "canonical": "audible", "display": "Audible" },
+  "athletic greens": { "canonical": "ag1", "display": "AG1" },
+  "drink ag1": { "canonical": "ag1", "display": "AG1" },
+  "ag1": { "canonical": "ag1", "display": "AG1" },
+  "raid shadow legends": { "canonical": "raidshadowlegends", "display": "Raid: Shadow Legends" },
+  "ground news": { "canonical": "groundnews", "display": "Ground News" },
+  "established titles": { "canonical": "establishedtitles", "display": "Established Titles" },
+  "shopify com": { "canonical": "shopify", "display": "Shopify" },
+  "honey": { "canonical": "honey", "display": "Honey" },
+  "join honey": { "canonical": "honey", "display": "Honey" },
+  "factor meals": { "canonical": "factor", "display": "Factor" }
 }

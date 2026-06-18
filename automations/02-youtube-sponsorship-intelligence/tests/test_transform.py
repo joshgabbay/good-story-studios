@@ -88,7 +88,7 @@ def test_resolve_brand_without_alias_uses_normalized_key_and_raw_display():
 import json
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "config.json")
-ALIASES_PATH = os.path.join(os.path.dirname(__file__), "..", "brand_aliases.seed.json")
+ALIASES_PATH = os.path.join(os.path.dirname(__file__), "fixtures", "aliases.json")
 
 
 def _load_json(path):
@@ -216,3 +216,33 @@ def test_top_unmatched_brands_exclude_removes_known():
     canonicals = [item["brand_display"] for item in out]
     assert "HelloFresh" in canonicals, "HelloFresh should still appear"
     assert "NordVPN" not in canonicals, "NordVPN should be excluded"
+
+
+# ---------------------------------------------------------------------------
+# long_form_warning: warn when the sheet can't distinguish long-form videos
+# ---------------------------------------------------------------------------
+
+def test_long_form_warning_threshold_no_lengths():
+    config = {"long_form": {"mode": "threshold", "length_threshold_seconds": 600}}
+    raw = [{"length_seconds": None, "long_form_flag": None},
+           {"length_seconds": None, "long_form_flag": None}]
+    assert transform.long_form_warning(raw, config) is not None
+
+
+def test_long_form_warning_threshold_with_lengths_is_none():
+    config = {"long_form": {"mode": "threshold", "length_threshold_seconds": 600}}
+    raw = [{"length_seconds": 700, "long_form_flag": None},
+           {"length_seconds": None, "long_form_flag": None}]
+    assert transform.long_form_warning(raw, config) is None
+
+
+def test_long_form_warning_flag_mode_no_flag_column():
+    config = {"long_form": {"mode": "flag"}}
+    raw = [{"length_seconds": None, "long_form_flag": None},
+           {"length_seconds": None, "long_form_flag": ""}]
+    assert transform.long_form_warning(raw, config) is not None
+
+
+def test_long_form_warning_empty_rows_is_none():
+    config = {"long_form": {"mode": "threshold", "length_threshold_seconds": 600}}
+    assert transform.long_form_warning([], config) is None

@@ -6,10 +6,12 @@ h1{color:#6B90D9;margin:0 0 4px;} .sub{color:#9AA7C2;font-weight:700;margin:0 0 
 table{width:100%;border-collapse:collapse;font-size:14px;} th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #EDF2FB;}
 th{color:#6B90D9;text-transform:uppercase;font-size:12px;letter-spacing:.5px;}
 .rel{background:#EAF7EE;color:#2E7D43;border-radius:10px;padding:2px 8px;font-size:12px;font-weight:700;}
-.section{margin-top:24px;} .narr{color:#5A78BB;line-height:1.6;}</style></head>
+.section{margin-top:24px;} .narr{color:#5A78BB;line-height:1.6;}
+.warn{background:#FFF4E5;color:#A35A00;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;margin:0 0 16px;}</style></head>
 <body><div class="card">
 <h1>Sponsorship Intelligence</h1>
 <p class="sub">{{MONTH_LABEL}}</p>
+{{WARNING}}
 <p class="narr">{{NARRATIVE}}</p>
 <div class="section"><table>
 <tr><th>#</th><th>Brand</th><th>Sponsorships</th><th>MoM</th><th>Relationship</th></tr>
@@ -17,6 +19,6 @@ th{color:#6B90D9;text-transform:uppercase;font-size:12px;letter-spacing:.5px;}
 </table></div>
 <div class="section"><strong>New this month:</strong> {{NEW_BRANDS}}</div>
 <div class="section"><strong>Dropped off:</strong> {{DROPPED_BRANDS}}</div>
-<div class="section"><strong>Top unmatched brands (review for aliasing):</strong> {{UNMATCHED}}</div>
+{{UNMATCHED_SECTION}}
 <p class="sub" style="margin-top:28px;">Generated {{GENERATED_DATE}} · Good Story Studios</p>
 </div></body></html>

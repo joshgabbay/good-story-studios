@@ -1,7 +1,7 @@
 import argparse
 import json
 
-from pipeline import transform, engine, relationships, report
+from pipeline import transform, engine, relationships, report, delivery
 
 
 def _load_json(path):
@@ -38,23 +38,31 @@ def run_month(csv_path, month, config_path, aliases_path, known_brands_path,
     engine.load_month(conn, month, rows)
     report_data = engine.rank_and_diff(conn, month, config["top_n"])
     report_data["unmatched"] = transform.top_unmatched_brands(rows, exclude=set(known))
+    report_data["warning"] = transform.long_form_warning(raw, config)
 
     rels = relationships.lookup_relationships(
         [r["brand_canonical"] for r in report_data["ranked"]], known)
     narrative = _build_narrative(report_data)
 
+    # External (client) recipients don't get the internal alias-review section.
+    show_unmatched = config.get("audience", "internal") != "external"
+
     with open(template_path, encoding="utf-8") as fh:
         template = fh.read()
-    html = report.render_html(report_data, rels, template, month_label, generated_date, narrative)
+    html = report.render_html(report_data, rels, template, month_label, generated_date,
+                              narrative, show_unmatched=show_unmatched)
     slack_text = report.render_slack(report_data, rels, month_label)
 
-    with open(out_html_path, "w", encoding="utf-8") as fh:
-        fh.write(html)
-
-    # Delivery is a STUB in v1: write artifacts + print. Email (Supabase) and Slack are wired later.
+    # Delivery is dry-run in v1: writes the HTML artifact; email/Slack senders are wired later.
+    delivery_result = delivery.deliver(
+        html, slack_text, out_html_path,
+        recipient=config.get("final_recipient"),
+        slack_channel=config.get("slack_channel"),
+        dry_run=True,
+    )
     print(slack_text)
     return {"report": report_data, "relationships": rels, "html_path": out_html_path,
-            "slack_text": slack_text}
+            "slack_text": slack_text, "delivery": delivery_result}
 
 
 def main(argv=None):

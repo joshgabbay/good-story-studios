@@ -3,6 +3,7 @@ import os
 from pipeline import run
 
 BASE = os.path.join(os.path.dirname(__file__), "..")
+ALIASES = os.path.join(os.path.dirname(__file__), "fixtures", "aliases.json")
 
 
 def test_end_to_end_two_months(tmp_path):
@@ -14,7 +15,7 @@ def test_end_to_end_two_months(tmp_path):
     res_may = run.run_month(
         csv_path=os.path.join(BASE, "sample", "2026-05_sample.csv"),
         month="2026-05", config_path=os.path.join(BASE, "config.json"),
-        aliases_path=os.path.join(BASE, "brand_aliases.seed.json"),
+        aliases_path=ALIASES,
         known_brands_path=os.path.join(BASE, "known_brands.json"),
         template_path=os.path.join(BASE, "email-template.html"),
         db_path=db, out_html_path=out_may, month_label="May 2026", generated_date="June 1, 2026",
@@ -26,7 +27,7 @@ def test_end_to_end_two_months(tmp_path):
     res_jun = run.run_month(
         csv_path=os.path.join(BASE, "sample", "2026-06_sample.csv"),
         month="2026-06", config_path=os.path.join(BASE, "config.json"),
-        aliases_path=os.path.join(BASE, "brand_aliases.seed.json"),
+        aliases_path=ALIASES,
         known_brands_path=os.path.join(BASE, "known_brands.json"),
         template_path=os.path.join(BASE, "email-template.html"),
         db_path=db, out_html_path=out_jun, month_label="June 2026", generated_date="July 1, 2026",
@@ -55,7 +56,7 @@ def test_run_month_is_rerunnable(tmp_path):
     args = dict(
         csv_path=os.path.join(BASE, "sample", "2026-05_sample.csv"), month="2026-05",
         config_path=os.path.join(BASE, "config.json"),
-        aliases_path=os.path.join(BASE, "brand_aliases.seed.json"),
+        aliases_path=ALIASES,
         known_brands_path=os.path.join(BASE, "known_brands.json"),
         template_path=os.path.join(BASE, "email-template.html"),
         db_path=db, out_html_path=str(tmp_path / "o.html"),

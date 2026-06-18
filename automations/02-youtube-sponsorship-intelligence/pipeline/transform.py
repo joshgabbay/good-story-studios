@@ -64,6 +64,23 @@ def resolve_brand(raw_sponsor, aliases):
     return key, str(raw_sponsor).strip()
 
 
+def long_form_warning(raw_rows, config):
+    """Return a warning string if the sheet lacks data to distinguish long-form videos.
+
+    When no length column (threshold mode) or no flag column (flag mode) is present,
+    every video is treated as long-form — surface that so the numbers aren't trusted blindly.
+    """
+    if not raw_rows:
+        return None
+    mode = config["long_form"].get("mode", "threshold")
+    if mode == "flag":
+        if all(not r.get("long_form_flag") for r in raw_rows):
+            return "No long-form flag column found — every video was counted as long-form."
+    elif all(r.get("length_seconds") is None for r in raw_rows):
+        return "No video length data found — every video was counted as long-form."
+    return None
+
+
 def normalize_rows(raw_rows, month, config, aliases):
     delimiter = config["multi_sponsor"]["delimiter"]
     long_form_cfg = config["long_form"]

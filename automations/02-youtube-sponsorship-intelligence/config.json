@@ -11,6 +11,7 @@
   "long_form": { "mode": "threshold", "length_threshold_seconds": 600 },
   "multi_sponsor": { "delimiter": ";" },
   "top_n": 25,
+  "audience": "internal",
   "final_recipient": null,
   "slack_channel": null
 }

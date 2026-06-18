@@ -36,10 +36,38 @@ def test_render_html_fills_template():
         template = fh.read()
     html = report.render_html(REPORT, RELATIONSHIPS, template, "June 2026", "June 18, 2026",
                               narrative="BetterHelp leads with 3.")
-    assert "{{ROWS}}" not in html and "{{MONTH_LABEL}}" not in html and "{{UNMATCHED}}" not in html
+    # No template placeholders left unfilled.
+    for ph in ("{{ROWS}}", "{{MONTH_LABEL}}", "{{UNMATCHED_SECTION}}", "{{WARNING}}", "{{NARRATIVE}}"):
+        assert ph not in html
     assert "June 2026" in html
     assert "BetterHelp" in html
     assert "HelloFresh" in html
     assert "Squarespace" in html
-    assert "MysteryCo" in html  # unmatched section rendered
+    assert "MysteryCo" in html  # unmatched section rendered (internal default)
     assert "BetterHelp leads with 3." in html
+
+
+def test_render_html_external_omits_unmatched_section():
+    with open(TEMPLATE_PATH, encoding="utf-8") as fh:
+        template = fh.read()
+    html = report.render_html(REPORT, RELATIONSHIPS, template, "June 2026", "June 18, 2026",
+                              narrative="x", show_unmatched=False)
+    assert "MysteryCo" not in html
+    assert "review for aliasing" not in html
+    assert "{{UNMATCHED_SECTION}}" not in html  # placeholder still filled (with empty string)
+    assert "BetterHelp" in html  # rest of the report is intact
+
+
+def test_render_html_warning_banner_shown_when_present():
+    with open(TEMPLATE_PATH, encoding="utf-8") as fh:
+        template = fh.read()
+    data = dict(REPORT, warning="No video length data found — every video was counted as long-form.")
+    html = report.render_html(data, RELATIONSHIPS, template, "June 2026", "June 18, 2026")
+    assert "No video length data found" in html
+    assert 'class="warn"' in html
+
+
+def test_render_slack_includes_warning():
+    data = dict(REPORT, warning="No video length data found — every video was counted as long-form.")
+    text = report.render_slack(data, RELATIONSHIPS, "June 2026")
+    assert "⚠️" in text and "No video length data found" in text
