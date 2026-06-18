@@ -51,3 +51,63 @@ def load_month(conn, month, rows):
         (month,),
     )
     conn.commit()
+
+
+def _counts_for_month(conn, month):
+    rows = conn.execute(
+        "SELECT brand_canonical, brand_display, sponsorship_count FROM brand_monthly_counts WHERE month = ?",
+        (month,),
+    ).fetchall()
+    return {canon: {"display": display, "count": count} for canon, display, count in rows}
+
+
+def _prior_month(conn, month):
+    row = conn.execute(
+        "SELECT MAX(month) FROM brand_monthly_counts WHERE month < ?", (month,)
+    ).fetchone()
+    return row[0] if row and row[0] else None
+
+
+def rank_and_diff(conn, month, top_n):
+    current = _counts_for_month(conn, month)
+    prior_month = _prior_month(conn, month)
+    prior = _counts_for_month(conn, prior_month) if prior_month else {}
+    is_baseline = prior_month is None
+
+    ordered = sorted(current.items(), key=lambda kv: (-kv[1]["count"], kv[0]))
+    ranked = []
+    for i, (canon, cur) in enumerate(ordered[:top_n], start=1):
+        prior_count = prior.get(canon, {}).get("count", 0)
+        delta = cur["count"] - prior_count
+        if prior_count == 0:
+            direction, pct = "new", None
+        elif delta > 0:
+            direction, pct = "up", round(delta / prior_count * 100, 1)
+        elif delta < 0:
+            direction, pct = "down", round(delta / prior_count * 100, 1)
+        else:
+            direction, pct = "same", 0.0
+        ranked.append({
+            "rank": i, "brand_canonical": canon, "brand_display": cur["display"],
+            "count": cur["count"], "prior_count": prior_count, "delta": delta,
+            "pct_change": pct, "direction": direction,
+        })
+
+    # `ordered` is sorted by count desc; cap to top_n so a 25k-row month doesn't emit
+    # hundreds of tiny new brands. Baseline has nothing to compare against.
+    new_brands = (
+        [{"brand_display": cur["display"], "count": cur["count"]}
+         for canon, cur in ordered if canon not in prior][:top_n]
+        if not is_baseline else []
+    )
+
+    dropped = [
+        {"brand_display": p["display"], "prior_count": p["count"]}
+        for canon, p in sorted(prior.items(), key=lambda kv: -kv[1]["count"])
+        if canon not in current
+    ][:top_n]
+
+    return {
+        "month": month, "prior_month": prior_month, "is_baseline": is_baseline,
+        "ranked": ranked, "new_brands": new_brands, "dropped_brands": dropped,
+    }
