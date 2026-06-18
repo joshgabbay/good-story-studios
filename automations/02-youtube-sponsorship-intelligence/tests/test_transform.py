@@ -49,3 +49,37 @@ def test_is_long_form_flag_mode():
 def test_is_long_form_unknown_defaults_true():
     cfg = {"mode": "threshold", "length_threshold_seconds": 600}
     assert transform.is_long_form(None, None, cfg) is True
+
+
+import os
+
+SAMPLE_DIR = os.path.join(os.path.dirname(__file__), "..", "sample")
+
+COLUMN_MAP = {
+    "video_title": "Video Title",
+    "video_url": "Video URL",
+    "channel": "Channel",
+    "sponsor": "Sponsor",
+    "publish_date": "Publish Date",
+    "length_seconds": "Length (s)",
+    "long_form_flag": None,
+}
+
+
+def test_load_csv_maps_columns_and_parses_length():
+    rows = transform.load_csv(os.path.join(SAMPLE_DIR, "2026-05_sample.csv"), COLUMN_MAP)
+    assert len(rows) == 6
+    assert rows[0]["video_title"] == "Vid A"
+    assert rows[0]["channel"] == "ChanX"
+    assert rows[0]["sponsor"] == "BetterHelp"
+    assert rows[0]["length_seconds"] == 720
+    assert rows[0]["long_form_flag"] is None
+
+
+def test_resolve_brand_uses_alias():
+    aliases = {"better help": {"canonical": "betterhelp", "display": "BetterHelp"}}
+    assert transform.resolve_brand("Better Help", aliases) == ("betterhelp", "BetterHelp")
+
+
+def test_resolve_brand_without_alias_uses_normalized_key_and_raw_display():
+    assert transform.resolve_brand("HelloFresh", {}) == ("hellofresh", "HelloFresh")
