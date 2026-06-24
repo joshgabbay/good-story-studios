@@ -55,6 +55,25 @@
 
 ---
 
+## Refocus — 2026-06-24 (current direction)
+
+Per leadership feedback, the automation was **refocused away from creative recommendations**.
+The AI no longer suggests how a film could be integrated, which roster creator fits, or any brand
+concept — that work belongs to the Good Story team and the automation must not step on it.
+
+The newsletter is now strictly: **film → release date → studio → studio point of contact.**
+
+- The per-film **Creator Opportunity** and **Actor Tie-In** blocks were **removed**.
+- The 2-sentence synopsis stays (factual context only).
+- Each studio block now shows the studio's **PR/marketing point of contact** (name, title, email),
+  looked up from a new **`studio-contacts.json`** database — researched once, up front, and reused
+  every run (not researched live). The essential, money-making piece is knowing *who to contact*
+  at each studio about a marketing deal to feature a film in a YouTube video.
+- Contacts are **partnerships-first** (brand/promotional/strategic partnerships leads), with a
+  publicity/PR contact as a fallback. Research-derived contacts are `speculative` + `unverified`;
+  Zack's CRM contacts get added as `confirmed` and automatically take priority. See
+  `routine.md` → "Studio contacts database" for the schema and how to add confirmed contacts.
+
 ## As-built (production routine)
 
 The original ask above is implemented and extended by the live cloud routine. See
@@ -63,8 +82,8 @@ source of truth. Differences from the original ask:
 
 - **Window is 3 months**, not 6 (the original first line said 6; the body and the build use 3).
 - **24 studios** (see `studios.json`) — low-yield studios were trimmed from the original list.
-- **Actor Tie-Ins** were added on top of the per-film creator tie-in: 2–4 grounded actors,
-  each with a short idea for appearing in that creator's video.
+- **Creator tie-ins + Actor Tie-Ins** were originally added on top of each film, but were
+  **removed on 2026-06-24** (see "Refocus" above) and replaced by the per-studio contact block.
 - **Accuracy/verification layer**: every date, distributor, premise, character, and actor is
   grounded in that-run web results only. Films are dropped if unverifiable or out of window;
   a film is filed under its **verified distributor** (not the page it was found on); an actor's

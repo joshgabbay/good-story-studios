@@ -21,7 +21,7 @@ when the two disagree, **this file and the live routine win.**
 
 1. Computes a 3-month window from the run date.
 2. Reads the config files in this folder (`studios.json`, `recipients.json`,
-   `creator-profiles-summary.md`, `email-template.html`).
+   `studio-contacts.json`, `email-template.html`).
 3. **Discovery** — for all 24 studios, lists every film with an in-window release date
    (Wikipedia tables for traditional studios; search + platform lists for the streamers).
    The studio at this stage is *provisional*. If a studio's Wikipedia URL 404s or has no
@@ -33,8 +33,10 @@ when the two disagree, **this file and the live routine win.**
    the window, or whose distributor is unclear are dropped; anticipated month-only in-window
    films are kept and tagged "(anticipated)". The same film is never listed under two studios —
    it is filed once under its verified distributor (deduped across sub-labels/co-productions).
-5. Per surviving film: a 2-sentence synopsis, one best-fit **creator** sponsorship tie-in, and
-   **actor tie-ins** (a short per-actor idea; a role label only when grounded).
+5. Per surviving film: a 2-sentence synopsis (film + release date). Each **studio block** also
+   shows that studio's **PR/marketing point of contact** (name, title, email), looked up from
+   `studio-contacts.json` — never researched at run time. No creator tie-ins or brand-integration
+   recommendations (the Good Story team owns those).
 6. Assembles HTML from `email-template.html`, replacing `{{MONTH_YEAR}}`, `{{GENERATED_DATE}}`,
    `{{STUDIO_BLOCKS}}`.
 7. **Delivery** — sends to the full `recipients.json` list via the Supabase `email_queue` +
@@ -49,11 +51,12 @@ Grounding facts come **only** from that run's web results, never from model memo
 - **Studio accuracy** — a film is filed under its **verified current distributor**, not the
   studio whose Wikipedia page first listed it (this is what catches e.g. a Warner Bros.–produced
   film now released by Ketchup Entertainment).
-- **Role accuracy** — an actor's `(Role)` appears **only when that character is grounded** in the
-  search results; otherwise the parenthetical is omitted. No guessed, vague, or impossible roles.
-  Names are spelled exactly as the sources show.
-- **Tie-in fidelity** — creator/actor tie-ins reference only the film's own grounded premise and
-  cast; no invented characters/professions or details imported from another film.
+- **No recommendations** — the email contains no creator tie-ins, brand-integration ideas, or
+  actor/casting suggestions. The Good Story team owns all integration/creator-fit decisions.
+- **Studio contacts** — each studio block shows exactly one point of contact, resolved **only**
+  from `studio-contacts.json` (never researched live) via its selection order (confirmed CRM
+  contact > primary > partnerships > publicity). Research-derived contacts carry an `unverified`
+  tag; confirmed CRM contacts do not.
 - **Streaming attribution** — titles from a parent's streamer (Peacock, Max, Disney+, Paramount+,
   Hulu) are filed under that parent but the synopsis names the platform; a streaming-only release
   is never presented as theatrical.
@@ -61,8 +64,31 @@ Grounding facts come **only** from that run's web results, never from model memo
 - **Currency** — each film uses its latest title/date/distributor; anything already released
   before today or retitled/moved out of the window is dropped (catches stale data like a film
   renamed and shipped early on another platform).
-- **Brevity** — synopsis 2 sentences, creator opp 2 sentences, ≤3 actor tie-ins, so the email
-  stays under Gmail's ~102KB clipping limit.
+- **Brevity** — synopsis 2 sentences and one Studio Contact box per studio, so the email stays
+  under Gmail's ~102KB clipping limit.
+
+## Studio contacts database (`studio-contacts.json`)
+
+The newsletter's whole point is now: **film → release date → studio → who to contact.** Contacts
+are **not researched at run time** — they live in `studio-contacts.json` and are looked up each run.
+
+- **Structure:** `label_to_company` maps each of the 24 studio labels (sub-labels included) to a
+  parent company; `companies` holds each company's `email_pattern` and a list of `contacts`. The
+  routine resolves a studio's label → company → one contact via `_meta.selection_order`.
+- **Selection order:** `status:"confirmed"` (CRM) → `primary:true` → first `role_type:"partnerships"`
+  → `role_type:"publicity"` (fallback).
+- **Speculative vs confirmed:** everything seeded from open-web research is `status:"speculative"`
+  with `email_type:"inferred"` (built from the company email pattern, **unverified**) and renders
+  with an `unverified` tag. Individual emails should be treated as best-guess until verified.
+- **Adding a confirmed CRM contact (Zack's contacts):** add a new object to the right company's
+  `contacts` array with `"status": "confirmed"`, a real verified `"email"`, `"email_type": "direct"`,
+  and (optionally) `"primary": true`. Confirmed contacts automatically win over speculative ones and
+  render without the `unverified` tag. No code change needed.
+- **Preview/QA:** `python3 tools/preview_contacts.py` renders every studio's resolved contact to
+  `/tmp/contacts_preview.html` (and asserts the HTML is tag-balanced) without sending anything.
+
+> Note: `creator-profiles-summary.md` is **no longer used** by the routine (the creator/actor tie-in
+> layer was removed). It's left in the folder for reference only.
 
 ## Editing the routine
 

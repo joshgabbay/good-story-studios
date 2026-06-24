@@ -1,0 +1,545 @@
+{
+  "_meta": {
+    "purpose": "Studio point-of-contact database for the monthly film-slate newsletter. The routine does NOT research contacts at run time; it looks them up here. For each studio block in the email, resolve the studio label -> company via label_to_company, then pick that company's best contact.",
+    "last_updated": "2026-06-24",
+    "owner_note": "Built from open-web research (trade press + LinkedIn). Most individual emails are INFERRED from each company's known corporate email pattern and are unverified. Zack's CRM contacts, when added, should be entered with status:'confirmed' and a real verified email; confirmed entries always win over speculative ones.",
+    "selection_order": [
+      "1. A contact with status='confirmed' (from the CRM) always wins.",
+      "2. Otherwise the contact flagged primary=true.",
+      "3. Otherwise the first contact with role_type='partnerships'.",
+      "4. Publicity contacts (role_type='publicity') are a fallback only when no partnerships contact exists.",
+      "Render the chosen contact's name, title, and email. If status='speculative', tag the email/contact as unverified in the email. If email is null, render 'email: research via LinkedIn / CRM'."
+    ],
+    "field_legend": {
+      "role_type": "partnerships = brand/promotional/strategic partnerships or marketing lead (who you pitch a paid creator integration to). publicity = press/media-relations lead (backup only).",
+      "status": "confirmed = verified, from Good Story CRM. speculative = research-derived, may be inaccurate.",
+      "email_type": "direct = published/verified individual address. inferred = constructed from the company email pattern, NOT verified. department = shared/team inbox. none = no email available.",
+      "confidence": "high | medium | low — confidence that the PERSON currently holds this role. Email accuracy is separate (see email_type).",
+      "primary": "true on the single best default contact for the company."
+    }
+  },
+
+  "_resources": [
+    { "name": "MarketingPartnerships.com studio directory", "url": "https://marketingpartnerships.com/", "note": "Industry directory of studio promotional-partnership departments and contacts (Disney, WB, Universal, Paramount, Lionsgate, etc.). Good place to verify/update department contacts." },
+    { "name": "Paramount Press Express", "url": "https://www.paramountpressexpress.com/brands-and-executives/", "note": "Official Paramount publicity/executive contact portal." },
+    { "name": "Studio careers pages", "url": "", "note": "Job postings (sonypicturesjobs.com, careers.paramount.com, jobs.lionsgate.com, amazon.jobs) reliably name the current partnerships departments and reporting lines even when individual names aren't public." }
+  ],
+
+  "label_to_company": {
+    "disney": "walt_disney_studios",
+    "marvel": "walt_disney_studios",
+    "lucasfilm": "walt_disney_studios",
+    "20th_century": "walt_disney_studios",
+    "pixar": "walt_disney_studios",
+    "wdas": "walt_disney_studios",
+    "warnerbros": "warner_bros",
+    "newline": "warner_bros",
+    "dc": "warner_bros",
+    "universal": "universal",
+    "dreamworks": "universal",
+    "illumination": "universal",
+    "focus": "focus_features",
+    "paramount": "paramount",
+    "sony": "sony",
+    "columbia": "sony",
+    "netflix": "netflix",
+    "amazon_mgm": "amazon_mgm",
+    "apple": "apple",
+    "lionsgate": "lionsgate",
+    "a24": "a24",
+    "skydance": "skydance",
+    "legendary": "legendary",
+    "blumhouse": "blumhouse"
+  },
+
+  "companies": {
+    "walt_disney_studios": {
+      "display_name": "The Walt Disney Studios",
+      "covers_labels": ["disney", "marvel", "lucasfilm", "20th_century", "pixar", "wdas"],
+      "email_pattern": "first.last@disney.com",
+      "email_pattern_confidence": "high",
+      "email_pattern_source": "https://rocketreach.co/the-walt-disney-company-email-format_b5c61cdef42e0c49",
+      "contacts": [
+        {
+          "name": "Lylle Breier",
+          "title": "EVP, Marketing Partnerships & Special Events, The Walt Disney Company",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "lylle.breier@disney.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "high",
+          "linkedin": "",
+          "source": "https://www.hollywoodreporter.com/movies/movie-news/walt-disney-co-promotes-lylle-breier-1235612621/",
+          "notes": "Runs ALL marketing partnerships, brand campaigns, and product placement for feature films + streaming across Disney Live Action, Walt Disney Animation, Pixar, Marvel, Lucasfilm, 20th Century, and Disney+. Single best entry point for the whole Disney family of labels."
+        }
+      ]
+    },
+
+    "warner_bros": {
+      "display_name": "Warner Bros. Pictures",
+      "covers_labels": ["warnerbros", "newline", "dc"],
+      "email_pattern": "first.last@warnerbros.com",
+      "email_pattern_confidence": "high",
+      "email_pattern_source": "https://rocketreach.co/warner-bros-entertainment-email-format_b5c61074f42e0c4f",
+      "notes": "Post-2025 Warner Bros. Discovery reorg: some corporate roles may use @wbd.com. Verify before sending.",
+      "contacts": [
+        {
+          "name": "Sarah Gregory",
+          "title": "VP, Global Brand Partnerships, Warner Bros.",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "sarah.gregory@warnerbros.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "https://www.linkedin.com/in/sarah-gregory-286b018/",
+          "source": "https://www.linkedin.com/in/sarah-gregory-286b018/",
+          "notes": "Dedicated global brand-partnerships lead. May appear under Warner Bros. Discovery (@wbd.com)."
+        },
+        {
+          "name": "Cameron Curtis",
+          "title": "EVP, Worldwide Digital Marketing, Warner Bros. Pictures",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "cameron.curtis@warnerbros.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://deadline.com/2022/11/warner-bros-cameron-curtis-evp-worldwide-digital-marketing-promotion-1235184236/",
+          "notes": "Restructured WB digital marketing into teams for social creative, TALENT & INFLUENCER strategy, and digital partnerships — the most relevant exec specifically for creator/YouTube integrations."
+        },
+        {
+          "name": "Josh Goldstine",
+          "title": "President, Worldwide Marketing, Warner Bros. Pictures Group",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "josh.goldstine@warnerbros.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://rocketreach.co/warner-bros-pictures-marketing-department_b5c6107bf42e0c4f",
+          "notes": "Top of the WB film marketing org; escalation point."
+        },
+        {
+          "name": "Jan Craft",
+          "title": "VP, Global Publicity, Warner Bros. Pictures",
+          "role_type": "publicity",
+          "primary": false,
+          "email": "jan.craft@warnerbros.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "https://www.linkedin.com/in/jan-craft-0b35738/",
+          "source": "https://www.linkedin.com/in/jan-craft-0b35738/",
+          "notes": "PR/publicity backup contact."
+        }
+      ]
+    },
+
+    "universal": {
+      "display_name": "Universal Pictures",
+      "covers_labels": ["universal", "dreamworks", "illumination"],
+      "email_pattern": "first.last@nbcuni.com",
+      "email_pattern_confidence": "high",
+      "email_pattern_source": "https://rocketreach.co/nbcuniversal-email-format_b5c6304bf42e0c5e",
+      "notes": "Corporate/UP&L staff use first.last@nbcuni.com (~96%). Some Universal Pictures film staff use lastf@universalpictures.com. Illumination & DreamWorks promotions run through Universal.",
+      "contacts": [
+        {
+          "name": "Stephanie Sperber",
+          "title": "President, Universal Partnerships & Licensing (UP&L), NBCUniversal",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "stephanie.sperber@nbcuni.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://licensinginternational.org/news/universal-partnerships-licensing-expands-focus-across-nbcuniversal/",
+          "notes": "UP&L is Universal's single point of contact for film promotions and corporate alliances/brand partnerships across theatrical, home ent, and parks. Best entry point for Universal/DreamWorks/Illumination promo deals."
+        }
+      ]
+    },
+
+    "focus_features": {
+      "display_name": "Focus Features",
+      "covers_labels": ["focus"],
+      "email_pattern": "first.last@focusfeatures.com",
+      "email_pattern_confidence": "medium",
+      "email_pattern_source": "https://www.zoominfo.com/p/Joshua-Kornblit/1434130573",
+      "notes": "Universal's specialty label, runs its own marketing/publicity. Big promo tie-ins can also route through Universal UP&L.",
+      "contacts": [
+        {
+          "name": "Jason Cassidy",
+          "title": "President of Marketing, Focus Features",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "jason.cassidy@focusfeatures.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://www.screendaily.com/news/jason-cassidy-to-lead-focus-features-marketing/5111291.article",
+          "notes": "Head of Focus marketing; reports to chairman Peter Kujawski."
+        },
+        {
+          "name": "Joshua Kornblit",
+          "title": "EVP, Marketing, Focus Features",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "joshua.kornblit@focusfeatures.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "https://www.linkedin.com/in/jkornblit/",
+          "source": "https://www.linkedin.com/in/jkornblit/",
+          "notes": "Day-to-day marketing/digital lead. ZoomInfo confirms j***@focusfeatures.com pattern."
+        },
+        {
+          "name": "Stephanie Phillips",
+          "title": "EVP, Publicity, Focus Features",
+          "role_type": "publicity",
+          "primary": false,
+          "email": "stephanie.phillips@focusfeatures.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://variety.com/2021/film/news/focus-features-stephanie-phillips-publicity-hire-dani-weinstein-1235121628/",
+          "notes": "PR/publicity backup."
+        }
+      ]
+    },
+
+    "paramount": {
+      "display_name": "Paramount Pictures",
+      "covers_labels": ["paramount"],
+      "email_pattern": "first.last@paramount.com",
+      "email_pattern_confidence": "high",
+      "email_pattern_source": "https://www.zoominfo.com/p/Irene-Trachtenberg/1816979435",
+      "notes": "Now Paramount Skydance Corporation (2025 merger); Skydance theatrical titles flow through this org.",
+      "contacts": [
+        {
+          "name": "Irene Trachtenberg",
+          "title": "SVP, Worldwide Marketing & Partnerships, Paramount Pictures",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "irene.trachtenberg@paramount.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://deadline.com/2018/01/paramount-ups-david-waldman-to-evp-domestic-publicity-irene-trachtenberg-named-head-of-worldwide-partnerships-1202240349/",
+          "notes": "Oversees global, multi-territory and domestic brand partnerships / promotional relationships for theatrical releases; has brokered major brand marketing support. ZoomInfo confirms i***@paramount.com pattern. Dept = Worldwide Theatrical Brand Partnerships & Promotions."
+        }
+      ]
+    },
+
+    "sony": {
+      "display_name": "Sony Pictures Entertainment",
+      "covers_labels": ["sony", "columbia"],
+      "email_pattern": "first_last@spe.sony.com",
+      "email_pattern_confidence": "high",
+      "email_pattern_source": "https://rocketreach.co/sony-pictures-entertainment-email-format_b5c61d3af42e0c49",
+      "notes": "Primary SPE pattern is first_last@spe.sony.com (~69%). Columbia/TriStar/Screen Gems all sit under SPE marketing.",
+      "contacts": [
+        {
+          "name": "Jeffrey Godsick",
+          "title": "EVP, Global Partnerships & Brand Strategy (and Head of Location-Based Entertainment), Sony Pictures",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "jeffrey_godsick@spe.sony.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "high",
+          "linkedin": "",
+          "source": "https://deadline.com/2017/02/jeffrey-godsick-brand-management-division-jay-galston-sony-pictures-entertainment-1201906892/",
+          "notes": "Leads Sony's worldwide partnerships & brand strategy; active brand-integration speaker in 2026. Best senior entry point."
+        },
+        {
+          "name": "(Open / verify) EVP, Global Brand Partnerships & Promotions",
+          "title": "EVP, Global Brand Partnerships & Promotions, Sony Pictures Motion Picture Group (reports to Head of Global Theatrical Marketing)",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": null,
+          "email_type": "none",
+          "status": "speculative",
+          "confidence": "low",
+          "linkedin": "",
+          "source": "https://www.sonypicturesjobs.com/job/culver-city/evp-global-brand-partnerships-and-promotions/22978/92975574640",
+          "notes": "Role was being actively recruited (job posting, 2026) — the dedicated film promotional-partnerships seat in Culver City (15-person team). Confirm the current name before outreach."
+        }
+      ]
+    },
+
+    "netflix": {
+      "display_name": "Netflix",
+      "covers_labels": ["netflix"],
+      "email_pattern": "flast@netflix.com",
+      "email_pattern_confidence": "medium",
+      "email_pattern_source": "https://aeroleads.com/company/netflix-email-format",
+      "notes": "Most common pattern is first-initial + last (e.g. mherran@netflix.com), ~65%. firstlast@netflix.com also occurs.",
+      "contacts": [
+        {
+          "name": "Magno Herran",
+          "title": "VP, Global Brand & Partnership Marketing, Netflix",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "mherran@netflix.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "high",
+          "linkedin": "",
+          "source": "https://adage.com/ad-age-video-podcast/marketers-brief/aa-netflix-magno-herran-brand-partnerships-upfronts/",
+          "notes": "Leads Netflix's global brand-marketing and partnerships team (e.g. Bridgerton x Dove, Wednesday x Wendy's). Top entry point for title-tied brand deals."
+        },
+        {
+          "name": "Chris Ficcara",
+          "title": "Senior Director, Brand Partnerships, Netflix",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "cficcara@netflix.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://jobs.netflix.com/careers/partnerships",
+          "notes": "Operational brand-partnerships contact under Herran."
+        }
+      ]
+    },
+
+    "apple": {
+      "display_name": "Apple Original Films / Apple TV+",
+      "covers_labels": ["apple"],
+      "email_pattern": "unknown",
+      "email_pattern_confidence": "low",
+      "email_pattern_source": "",
+      "notes": "Apple is deliberately opaque about marketing contacts and rarely runs traditional promotional/brand partnerships. Apple Studios is run by Zack Van Amburg & Jamie Erlicht; the consumer-marketing chief seat has been in flux (Ricky Strauss departed May 2024). Best practical route is via the film's publicity team or the relevant talent agency rather than a studio partnerships desk.",
+      "contacts": [
+        {
+          "name": "(Vacant / in flux) Head of Marketing, Apple TV+",
+          "title": "Head of Marketing, Apple TV+ (consumer marketing, advertising, promotions for originals)",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": null,
+          "email_type": "none",
+          "status": "speculative",
+          "confidence": "low",
+          "linkedin": "",
+          "source": "https://appleinsider.com/articles/24/05/08/head-of-apple-tv-marketing-ricky-strauss-is-leaving",
+          "notes": "Confirm the current marketing head before any outreach. Treat Apple as a CRM/relationship-only contact until Zack provides a name."
+        }
+      ]
+    },
+
+    "amazon_mgm": {
+      "display_name": "Amazon MGM Studios",
+      "covers_labels": ["amazon_mgm"],
+      "email_pattern": "unknown (Amazon corporate logins are non-standard)",
+      "email_pattern_confidence": "low",
+      "email_pattern_source": "",
+      "notes": "Amazon email addresses are unpredictable (corporate login @amazon.com), so individual emails should be confirmed via LinkedIn/CRM rather than inferred.",
+      "contacts": [
+        {
+          "name": "Lauren Anderson",
+          "title": "Head of Brand & Content Innovation, Amazon MGM Studios",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": null,
+          "email_type": "none",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://www.thewrap.com/amazon-mgm-lauren-anderson-head-brand-content-innovation/",
+          "notes": "Manages the studio's creative collaboration with brands across the Prime Video slate — sponsorships, integrations, custom content. Strongest fit for paid creator integrations."
+        },
+        {
+          "name": "Ned Mitchell",
+          "title": "Head of Brand Partnerships, Originals (LatAm/Canada/Australia), Amazon MGM Studios International (LA-based)",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": null,
+          "email_type": "none",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://deadline.com/2024/12/amazon-mgm-studios-international-brands-originals-roles-1236237802/",
+          "notes": "Dedicated brand-partnerships exec (LA). EU counterpart: Ludovic Attal (London)."
+        },
+        {
+          "name": "Adriene Bowles",
+          "title": "Head of Theatrical Publicity, Amazon MGM Studios",
+          "role_type": "publicity",
+          "primary": false,
+          "email": null,
+          "email_type": "none",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://www.ragan.com/how-tahajah-samuels-drives-organic-impact-through-film-campaigns-at-amazon-mgm-studios/",
+          "notes": "PR/publicity backup. Top marketing = Sue Kroll (Head of Global Marketing, Film & Series)."
+        }
+      ]
+    },
+
+    "lionsgate": {
+      "display_name": "Lionsgate",
+      "covers_labels": ["lionsgate"],
+      "email_pattern": "first.last@lionsgate.com",
+      "email_pattern_confidence": "medium",
+      "email_pattern_source": "https://rocketreach.co/",
+      "contacts": [
+        {
+          "name": "Marisa Liston",
+          "title": "President, Worldwide Marketing, Lionsgate Motion Picture Group",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "marisa.liston@lionsgate.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://www.hollywoodreporter.com/business/business-news/lionsgate-film-group-taps-marisa-liston-as-worldwide-marketing-head-1234994812/",
+          "notes": "Top of Lionsgate film marketing; brand-partnerships team (incl. a Director, Brand Partnerships) reports into her org."
+        },
+        {
+          "name": "Brad Haugen",
+          "title": "EVP, Digital Strategy & Growth, Lionsgate",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "brad.haugen@lionsgate.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://variety.com/2025/film/news/lionsgate-hires-brad-haugen-1236374890/",
+          "notes": "Leads original digital content, brand partnerships, and creator/storytelling initiatives — relevant for YouTube/creator deals."
+        }
+      ]
+    },
+
+    "a24": {
+      "display_name": "A24",
+      "covers_labels": ["a24"],
+      "email_pattern": "first@a24films.com (small company; first.last also possible)",
+      "email_pattern_confidence": "low",
+      "email_pattern_source": "https://rocketreach.co/graham-retzik-email_1448225",
+      "contacts": [
+        {
+          "name": "Graham Retzik",
+          "title": "Head of Creative Marketing & Brand, A24",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "graham@a24films.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://www.zoominfo.com/p/Graham-Retzik/2767093811",
+          "notes": "Leads A24 brand + creative marketing (ZoomInfo confirms g***@a24films.com; could be graham.retzik@a24films.com). A24 does limited traditional brand-partnership deals."
+        }
+      ]
+    },
+
+    "skydance": {
+      "display_name": "Skydance Media",
+      "covers_labels": ["skydance"],
+      "email_pattern": "first.last@skydance.com",
+      "email_pattern_confidence": "low",
+      "email_pattern_source": "",
+      "notes": "Merged into Paramount Skydance Corporation (2025) — Skydance theatrical films now flow through Paramount's marketing/partnerships (see 'paramount'). Skydance maintains its own franchise/corporate marketing.",
+      "contacts": [
+        {
+          "name": "Rebecca Mall",
+          "title": "President, Cross-Company Initiatives, Franchise & Corporate Marketing, Paramount Skydance (former Skydance CMO)",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "rebecca.mall@skydance.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://deadline.com/2025/08/skydance-paramount-senior-leadership-team-1236479677/",
+          "notes": "For a Skydance-produced theatrical title, also try the Paramount partnerships contact (Irene Trachtenberg)."
+        }
+      ]
+    },
+
+    "legendary": {
+      "display_name": "Legendary Entertainment",
+      "covers_labels": ["legendary"],
+      "email_pattern": "first.last@legendary.com",
+      "email_pattern_confidence": "low",
+      "email_pattern_source": "",
+      "notes": "Production company; theatrical distribution now via Paramount (3-year deal, 2025+). Legendary runs its own marketing & partnerships.",
+      "contacts": [
+        {
+          "name": "Blair Rich",
+          "title": "Chief Marketing & Commercial Officer, Legendary Entertainment",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "blair.rich@legendary.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "high",
+          "linkedin": "",
+          "source": "https://variety.com/2024/film/news/blair-rich-legendary-entertainment-chief-marketing-commercial-officer-1236199685/",
+          "notes": "Joined Nov 2024 from Warner Bros. (former President of Worldwide Marketing). Drives Legendary's global marketing, branding, and partnerships."
+        },
+        {
+          "name": "Brian Worsley",
+          "title": "Marketing Executive (global marketing, partnerships & JVs), Legendary Entertainment",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "brian.worsley@legendary.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://deadline.com/2025/03/legendary-entertainment-brian-worsley-1236352340/",
+          "notes": "Global marketing across film/TV/gaming/licensing incl. partnerships & joint ventures (joined March 2025)."
+        }
+      ]
+    },
+
+    "blumhouse": {
+      "display_name": "Blumhouse Productions",
+      "covers_labels": ["blumhouse"],
+      "email_pattern": "first@blumhouse.com (first.last also possible)",
+      "email_pattern_confidence": "low",
+      "email_pattern_source": "",
+      "notes": "Horror label; theatrical distribution mostly via Universal. Runs its own marketing/partnerships and has a branded-content partnership with NBCUniversal.",
+      "contacts": [
+        {
+          "name": "Amanda Maes",
+          "title": "EVP, Marketing, Blumhouse",
+          "role_type": "partnerships",
+          "primary": true,
+          "email": "amanda.maes@blumhouse.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://deadline.com/2025/08/blumhouse-amanda-maes-1236486513/",
+          "notes": "Joined Aug 2025; oversees consumer products, live experiences, PARTNERSHIPS, and brand initiatives. Reports to CMO Karen Barragan. Prior: Lionsgate & Netflix."
+        },
+        {
+          "name": "Karen Barragan",
+          "title": "Chief Marketing Officer, Blumhouse",
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "karen.barragan@blumhouse.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "",
+          "source": "https://variety.com/2018/film/news/netflixs-karen-barragan-joins-blumhouse-as-head-of-marketing-and-communications-1203093979/",
+          "notes": "Heads marketing + communications for theatrical and TV; escalation point / PR backup."
+        }
+      ]
+    }
+  }
+}
