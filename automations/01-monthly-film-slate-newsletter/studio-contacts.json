@@ -19,7 +19,8 @@
       "email_verified": "true only when a verifier confirmed the exact mailbox is deliverable ('valid'). 'accept_all' domains are NOT verified (catch-all accepts everything).",
       "verification": "{source, status (valid|accept_all|unconfirmed|not_found), score 0-100, checked date} from the last verification pass."
     },
-    "verification_pass": "2026-06-24 Hunter.io Bulk Email Finder run: 10 valid (-> status:confirmed), 11 accept_all (domain catch-all, address likely-right-but-unverified), 3 not_found. See each contact's `verification` field."
+    "verification_pass": "2026-06-24 Hunter.io Bulk Email Finder run: 10 valid (-> status:confirmed), 11 accept_all (domain catch-all, address likely-right-but-unverified), 3 not_found. See each contact's `verification` field.",
+    "staleness_fixes": "2026-06-24: corrected stale entries found while filling email gaps — Josh Goldstine moved WB->Paramount (Jan/Oct 2025); Stephanie Sperber left Universal in 2015 (replaced w/ Frank/Hill/Bendis); Lauren Anderson moved to Amazon Ads (Ned Mitchell now primary for Amazon MGM); Apple seat vacant (Tor Myhren oversees)."
   },
   "_resources": [
     {
@@ -154,26 +155,6 @@
           }
         },
         {
-          "name": "Josh Goldstine",
-          "title": "President, Worldwide Marketing, Warner Bros. Pictures Group",
-          "role_type": "partnerships",
-          "primary": false,
-          "email": "josh.goldstine@warnerbros.com",
-          "email_type": "inferred",
-          "status": "speculative",
-          "confidence": "medium",
-          "linkedin": "",
-          "source": "https://rocketreach.co/warner-bros-pictures-marketing-department_b5c6107bf42e0c4f",
-          "notes": "Top of the WB film marketing org; escalation point. [verify 2026-06-24: Hunter did not find an address; josh.goldstine@ is the pattern guess.]",
-          "email_verified": false,
-          "verification": {
-            "source": "hunter",
-            "status": "not_found",
-            "score": null,
-            "checked": "2026-06-24"
-          }
-        },
-        {
           "name": "Jan Craft",
           "title": "VP, Global Publicity, Warner Bros. Pictures",
           "role_type": "publicity",
@@ -192,6 +173,20 @@
             "score": 99,
             "checked": "2026-06-24"
           }
+        },
+        {
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "dana.nussbaum@warnerbros.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "high",
+          "linkedin": "",
+          "source": "https://deadline.com/2025/01/warner-bros-josh-goldstine-andrew-cripps-1236251336/",
+          "notes": "20-yr WB marketing vet; credited with the Beetlejuice Beetlejuice brand partnerships. Stepped in (with Christian Davin) to run global marketing after Josh Goldstine left Jan 2025. ZoomInfo shows d***@warnerbros.com (matches the verified first.last pattern).",
+          "email_verified": false,
+          "name": "Dana Nussbaum",
+          "title": "Co-Head, Global Motion Picture Marketing, Warner Bros. (interim worldwide marketing lead after Goldstine's exit)"
         }
       ]
     },
@@ -205,27 +200,49 @@
       "email_pattern": "first.last@nbcuni.com",
       "email_pattern_confidence": "high",
       "email_pattern_source": "https://rocketreach.co/nbcuniversal-email-format_b5c6304bf42e0c5e",
-      "notes": "Corporate/UP&L staff use first.last@nbcuni.com (~96%). Some Universal Pictures film staff use lastf@universalpictures.com. Illumination & DreamWorks promotions run through Universal.",
+      "notes": "Universal Pictures partnership-marketing VPs (Frank/Hill) + global publicity (Bendis). NOTE: Stephanie Sperber (former UP&L president) left Universal in 2015 — removed. Illumination/DreamWorks promos still route through Universal. first.last@nbcuni.com; some film staff use @universalpictures.com.",
       "contacts": [
         {
-          "name": "Stephanie Sperber",
-          "title": "President, Universal Partnerships & Licensing (UP&L), NBCUniversal",
           "role_type": "partnerships",
           "primary": true,
-          "email": "stephanie.sperber@nbcuni.com",
+          "email": "holly.frank@nbcuni.com",
           "email_type": "inferred",
           "status": "speculative",
           "confidence": "medium",
           "linkedin": "",
-          "source": "https://licensinginternational.org/news/universal-partnerships-licensing-expands-focus-across-nbcuniversal/",
-          "notes": "UP&L is Universal's single point of contact for film promotions and corporate alliances/brand partnerships across theatrical, home ent, and parks. Best entry point for Universal/DreamWorks/Illumination promo deals. [verify 2026-06-24: Hunter did not find at nbcuni.com; may use @universalpictures.com. Verify.]",
+          "source": "https://theorg.com/org/universal-pictures",
+          "notes": "Current Universal Pictures partnership-marketing lead. Replaces Stephanie Sperber, who LEFT Universal in 2015. Email inferred (first.last@nbcuni.com; some Universal film staff use @universalpictures.com). Verify currency.",
           "email_verified": false,
-          "verification": {
-            "source": "hunter",
-            "status": "not_found",
-            "score": null,
-            "checked": "2026-06-24"
-          }
+          "name": "Holly Frank",
+          "title": "VP, Partnership Marketing, Universal Pictures"
+        },
+        {
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "robert.hill@nbcuni.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "https://www.linkedin.com/in/robert-hill-4944b55/",
+          "source": "https://www.linkedin.com/in/robert-hill-4944b55/",
+          "notes": "Universal Pictures partnerships & licensing (marketing & creative). Email inferred. Verify currency.",
+          "email_verified": false,
+          "name": "Robert Hill",
+          "title": "VP, Marketing & Creative — Partnerships & Licensing, Universal Pictures"
+        },
+        {
+          "role_type": "publicity",
+          "primary": false,
+          "email": "megan.bendis@nbcuni.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "medium",
+          "linkedin": "https://www.linkedin.com/in/megan-bendis-a668335/",
+          "source": "https://www.linkedin.com/in/megan-bendis-a668335/",
+          "notes": "PR/publicity backup for Universal.",
+          "email_verified": false,
+          "name": "Megan Bendis",
+          "title": "EVP, Global Publicity, Universal Pictures"
         }
       ]
     },
@@ -330,6 +347,20 @@
             "score": 81,
             "checked": "2026-06-24"
           }
+        },
+        {
+          "role_type": "partnerships",
+          "primary": false,
+          "email": "josh.goldstine@paramount.com",
+          "email_type": "inferred",
+          "status": "speculative",
+          "confidence": "high",
+          "linkedin": "",
+          "source": "https://www.thewrap.com/paramount-pictures-josh-goldstine-global-marketing-distribution-president/",
+          "notes": "Joined Paramount Oct 2025 from Warner Bros (ran the Barbie campaign). Top of Paramount film marketing/distribution; senior escalation above Trachtenberg. Separator uncertain — Hunter found Trachtenberg as first_last@ (underscore), so josh_goldstine@paramount.com is also possible.",
+          "email_verified": false,
+          "name": "Josh Goldstine",
+          "title": "President, Global Marketing & Distribution, Paramount Pictures"
         }
       ]
     },
@@ -442,8 +473,6 @@
       "notes": "Apple is deliberately opaque about marketing contacts and rarely runs traditional promotional/brand partnerships. Apple Studios is run by Zack Van Amburg & Jamie Erlicht; the consumer-marketing chief seat has been in flux (Ricky Strauss departed May 2024). Best practical route is via the film's publicity team or the relevant talent agency rather than a studio partnerships desk.",
       "contacts": [
         {
-          "name": "(Vacant / in flux) Head of Marketing, Apple TV+",
-          "title": "Head of Marketing, Apple TV+ (consumer marketing, advertising, promotions for originals)",
           "role_type": "partnerships",
           "primary": true,
           "email": null,
@@ -451,8 +480,11 @@
           "status": "speculative",
           "confidence": "low",
           "linkedin": "",
-          "source": "https://appleinsider.com/articles/24/05/08/head-of-apple-tv-marketing-ricky-strauss-is-leaving",
-          "notes": "Confirm the current marketing head before any outreach. Treat Apple as a CRM/relationship-only contact until Zack provides a name."
+          "source": "https://variety.com/2024/tv/news/ricky-strauss-exits-apple-tv-1235995046/",
+          "notes": "Apple has no public dedicated Apple TV+ marketing head; the function rolls up to Tor Myhren. Apple is opaque about contacts and rarely does traditional promotional partnerships — relationship/CRM-only. No reliable email pattern.",
+          "email_verified": false,
+          "name": "Tor Myhren",
+          "title": "VP, Marketing Communications, Apple (oversees Apple TV+ marketing; dedicated Apple TV+ marketing-head seat vacant since Ricky Strauss left May 2024)"
         }
       ]
     },
@@ -468,16 +500,16 @@
       "contacts": [
         {
           "name": "Lauren Anderson",
-          "title": "Head of Brand & Content Innovation, Amazon MGM Studios",
+          "title": "Director, Amazon Ads Brand Innovation Lab (moved Oct 2025 from Head of Brand & Content Innovation, Amazon MGM Studios)",
           "role_type": "partnerships",
-          "primary": true,
+          "primary": false,
           "email": null,
           "email_type": "none",
           "status": "speculative",
           "confidence": "medium",
           "linkedin": "",
           "source": "https://www.thewrap.com/amazon-mgm-lauren-anderson-head-brand-content-innovation/",
-          "notes": "Manages the studio's creative collaboration with brands across the Prime Video slate — sponsorships, integrations, custom content. Strongest fit for paid creator integrations. [verify 2026-06-24: Hunter did not find; Amazon format irregular. Find via LinkedIn/CRM.]",
+          "notes": "As of Oct 2025 shifted full-time to Amazon Ads Brand Innovation Lab (brand partnerships across Prime Video, Music, Twitch, Alexa, Fire TV). Still relevant for brand integrations, but Ned Mitchell is now the cleaner Amazon MGM Studios-specific door. Manages the studio's creative collaboration with brands across the Prime Video slate — sponsorships, integrations, custom content. Strongest fit for paid creator integrations. [verify 2026-06-24: Hunter did not find; Amazon format irregular. Find via LinkedIn/CRM.]",
           "email_verified": false,
           "verification": {
             "source": "hunter",
@@ -490,7 +522,7 @@
           "name": "Ned Mitchell",
           "title": "Head of Brand Partnerships, Originals (LatAm/Canada/Australia), Amazon MGM Studios International (LA-based)",
           "role_type": "partnerships",
-          "primary": false,
+          "primary": true,
           "email": "nedmitchell@amazon.com",
           "email_type": "inferred",
           "status": "speculative",
