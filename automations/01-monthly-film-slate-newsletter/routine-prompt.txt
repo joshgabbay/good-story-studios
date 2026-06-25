@@ -44,9 +44,9 @@ INTEGRITY CHECK: before Step 7, scan the assembled HTML for stray or partial tag
 STEP 7 — Write the full HTML to /tmp/email_body.html
 
 STEP 8 — Send via Supabase (CCR blocks direct HTTP; load HTML in a FEW raw dollar-quoted chunks, NOT base64).
-a) From recipients.json build a JSON array string of ALL addresses; use as to_address:
+a) From recipients.json build a JSON ARRAY STRING of ALL addresses and use it verbatim as to_address. It MUST be a JSON array even for a SINGLE recipient — e.g. ["joshuagabbay1@gmail.com"] (square brackets + double quotes), NEVER a bare joshuagabbay1@gmail.com and NEVER a comma-separated plain string. The send function JSON-parses to_address and only fans out to every recipient when it is a valid JSON array; a bare or comma string collapses into one malformed address as soon as there is more than one recipient.
 mcp__claude_ai_Supabase__execute_sql (project_id 'qahbmrequuwfklqsfaex'):
-INSERT INTO email_queue (to_address, subject, html_body) VALUES ('<RECIPIENTS_JSON_ARRAY>', 'Good Story Studios — <MONTH_YEAR> Film Slate ✦', '') RETURNING id;
+INSERT INTO email_queue (to_address, subject, html_body) VALUES ('<RECIPIENTS_JSON_ARRAY>', 'Good Story Studios — <MONTH_YEAR> Film Slate ✦', '') RETURNING id;   -- example to_address literal: '["joshuagabbay1@gmail.com"]'
 b) python3 -c "h=open('/tmp/email_body.html',encoding='utf-8').read(); n=12000; c=[h[i:i+n] for i in range(0,len(h),n)]; [open(f'/tmp/part_{i}.txt','w',encoding='utf-8').write(x) for i,x in enumerate(c)]; print('chunks:',len(c))"
 c) For each part in order, ONE execute_sql: UPDATE email_queue SET html_body = html_body || $GSS$<exact contents of /tmp/part_i.txt>$GSS$ WHERE id = QUEUE_ID;
 d) Verify: SELECT length(html_body) AS len, right(html_body,15) AS tail FROM email_queue WHERE id = QUEUE_ID;  expect 30000+, tail </html>.
