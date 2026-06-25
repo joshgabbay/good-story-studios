@@ -19,7 +19,7 @@
       "email_verified": "true only when a verifier confirmed the exact mailbox is deliverable ('valid'). 'accept_all' domains are NOT verified (catch-all accepts everything).",
       "verification": "{source, status (valid|accept_all|unconfirmed|not_found), score 0-100, checked date} from the last verification pass."
     },
-    "verification_pass": "2026-06-24 Hunter.io Bulk Email Finder run: 10 valid (-> status:confirmed), 11 accept_all (domain catch-all, address likely-right-but-unverified), 3 not_found. See each contact's `verification` field.",
+    "verification_pass": "2026-06-24 Hunter.io Bulk Email Finder run: 10 valid (-> status:confirmed), 11 accept_all (domain catch-all, address likely-right-but-unverified), 3 not_found. See each contact's `verification` field. | 2026-06-24 pass 2 (5 new names): valid=Nussbaum, Robert Hill (rob@nbcuni.com), Bendis; accept_all=Goldstine (josh_goldstine@paramount.com, underscore); not_found=Holly Frank (retry universalpictures.com).",
     "staleness_fixes": "2026-06-24: corrected stale entries found while filling email gaps — Josh Goldstine moved WB->Paramount (Jan/Oct 2025); Stephanie Sperber left Universal in 2015 (replaced w/ Frank/Hill/Bendis); Lauren Anderson moved to Amazon Ads (Ned Mitchell now primary for Amazon MGM); Apple seat vacant (Tor Myhren oversees)."
   },
   "_resources": [
@@ -178,15 +178,21 @@
           "role_type": "partnerships",
           "primary": false,
           "email": "dana.nussbaum@warnerbros.com",
-          "email_type": "inferred",
-          "status": "speculative",
+          "email_type": "direct",
+          "status": "confirmed",
           "confidence": "high",
-          "linkedin": "",
+          "linkedin": "https://www.linkedin.com/in/dana-nussbaum-87824a91",
           "source": "https://deadline.com/2025/01/warner-bros-josh-goldstine-andrew-cripps-1236251336/",
           "notes": "20-yr WB marketing vet; credited with the Beetlejuice Beetlejuice brand partnerships. Stepped in (with Christian Davin) to run global marketing after Josh Goldstine left Jan 2025. ZoomInfo shows d***@warnerbros.com (matches the verified first.last pattern).",
-          "email_verified": false,
+          "email_verified": true,
           "name": "Dana Nussbaum",
-          "title": "Co-Head, Global Motion Picture Marketing, Warner Bros. (interim worldwide marketing lead after Goldstine's exit)"
+          "title": "EVP, Marketing (Co-Head, Global Motion Picture Marketing), Warner Bros.",
+          "verification": {
+            "source": "hunter",
+            "status": "valid",
+            "score": 98,
+            "checked": "2026-06-24"
+          }
         }
       ]
     },
@@ -204,45 +210,63 @@
       "contacts": [
         {
           "role_type": "partnerships",
-          "primary": true,
+          "primary": false,
           "email": "holly.frank@nbcuni.com",
           "email_type": "inferred",
           "status": "speculative",
           "confidence": "medium",
           "linkedin": "",
           "source": "https://theorg.com/org/universal-pictures",
-          "notes": "Current Universal Pictures partnership-marketing lead. Replaces Stephanie Sperber, who LEFT Universal in 2015. Email inferred (first.last@nbcuni.com; some Universal film staff use @universalpictures.com). Verify currency.",
+          "notes": "Current Universal Pictures partnership-marketing lead. Replaces Stephanie Sperber, who LEFT Universal in 2015. Email inferred (first.last@nbcuni.com; some Universal film staff use @universalpictures.com). Verify currency. [verify 2026-06-24: Hunter NOT found at nbcuni.com — retry @universalpictures.com.]",
           "email_verified": false,
           "name": "Holly Frank",
-          "title": "VP, Partnership Marketing, Universal Pictures"
+          "title": "VP, Partnership Marketing, Universal Pictures",
+          "verification": {
+            "source": "hunter",
+            "status": "not_found",
+            "score": null,
+            "checked": "2026-06-24"
+          }
         },
         {
           "role_type": "partnerships",
-          "primary": false,
-          "email": "robert.hill@nbcuni.com",
-          "email_type": "inferred",
-          "status": "speculative",
+          "primary": true,
+          "email": "rob@nbcuni.com",
+          "email_type": "direct",
+          "status": "confirmed",
           "confidence": "medium",
           "linkedin": "https://www.linkedin.com/in/robert-hill-4944b55/",
           "source": "https://www.linkedin.com/in/robert-hill-4944b55/",
-          "notes": "Universal Pictures partnerships & licensing (marketing & creative). Email inferred. Verify currency.",
-          "email_verified": false,
+          "notes": "Universal Pictures partnerships & licensing (marketing & creative). Email inferred. Verify currency. [verify 2026-06-24: Hunter-verified as rob@nbcuni.com (valid 99) — unusual short alias; sanity-check before high-stakes outreach.]",
+          "email_verified": true,
           "name": "Robert Hill",
-          "title": "VP, Marketing & Creative — Partnerships & Licensing, Universal Pictures"
+          "title": "VP, Marketing & Creative — Partnerships & Licensing, Universal Pictures",
+          "verification": {
+            "source": "hunter",
+            "status": "valid",
+            "score": 99,
+            "checked": "2026-06-24"
+          }
         },
         {
           "role_type": "publicity",
           "primary": false,
           "email": "megan.bendis@nbcuni.com",
-          "email_type": "inferred",
-          "status": "speculative",
+          "email_type": "direct",
+          "status": "confirmed",
           "confidence": "medium",
           "linkedin": "https://www.linkedin.com/in/megan-bendis-a668335/",
           "source": "https://www.linkedin.com/in/megan-bendis-a668335/",
           "notes": "PR/publicity backup for Universal.",
-          "email_verified": false,
+          "email_verified": true,
           "name": "Megan Bendis",
-          "title": "EVP, Global Publicity, Universal Pictures"
+          "title": "EVP, Global Publicity, Universal Pictures",
+          "verification": {
+            "source": "hunter",
+            "status": "valid",
+            "score": 99,
+            "checked": "2026-06-24"
+          }
         }
       ]
     },
@@ -323,7 +347,7 @@
       "covers_labels": [
         "paramount"
       ],
-      "email_pattern": "first.last@paramount.com",
+      "email_pattern": "first_last@paramount.com (underscore)",
       "email_pattern_confidence": "high",
       "email_pattern_source": "https://www.zoominfo.com/p/Irene-Trachtenberg/1816979435",
       "notes": "Now Paramount Skydance Corporation (2025 merger); Skydance theatrical titles flow through this org.",
@@ -351,16 +375,22 @@
         {
           "role_type": "partnerships",
           "primary": false,
-          "email": "josh.goldstine@paramount.com",
+          "email": "josh_goldstine@paramount.com",
           "email_type": "inferred",
           "status": "speculative",
           "confidence": "high",
           "linkedin": "",
           "source": "https://www.thewrap.com/paramount-pictures-josh-goldstine-global-marketing-distribution-president/",
-          "notes": "Joined Paramount Oct 2025 from Warner Bros (ran the Barbie campaign). Top of Paramount film marketing/distribution; senior escalation above Trachtenberg. Separator uncertain — Hunter found Trachtenberg as first_last@ (underscore), so josh_goldstine@paramount.com is also possible.",
+          "notes": "Joined Paramount Oct 2025 from Warner Bros (ran the Barbie campaign). Top of Paramount film marketing/distribution; senior escalation above Trachtenberg. Separator uncertain — Hunter found Trachtenberg as first_last@ (underscore), so josh_goldstine@paramount.com is also possible. [verify 2026-06-24: Hunter confirms Paramount = first_last@ (underscore), accept_all.]",
           "email_verified": false,
           "name": "Josh Goldstine",
-          "title": "President, Global Marketing & Distribution, Paramount Pictures"
+          "title": "President, Global Marketing & Distribution, Paramount Pictures",
+          "verification": {
+            "source": "hunter",
+            "status": "accept_all",
+            "score": 83,
+            "checked": "2026-06-24"
+          }
         }
       ]
     },
